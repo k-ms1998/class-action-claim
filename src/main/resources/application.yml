@@ -1,0 +1,28 @@
+# logging 레벨 설정
+logging:
+  level:
+    root: INFO
+    sql: ERROR
+# Overloaded POST 사용
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver  #h2 드라이버 설정
+    url: jdbc:h2:tcp://localhost/~/cac-db
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show_sql: true
+  h2:
+    console:
+      enabled: true  # H2 웹 콘솔을 사용하겠다는 의미
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+## session
+#server:
+#  servlet:
+#    session:
+#      timeout: 10m # 기본이 30분이고 최소는 1분입니다.
