@@ -21,6 +21,20 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: { Sender ID } # !! 외부 및 다른 사람에게 노출되지 않도로 주의 !!
+    password: { Sender Password } # !! 외부 및 다른 사람에게 노출되지 않도로 주의 !!
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+          starttls:
+            enable: true
+
 ## session
 #server:
 #  servlet:
