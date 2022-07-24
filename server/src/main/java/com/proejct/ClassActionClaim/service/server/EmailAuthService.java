@@ -38,6 +38,10 @@ public class EmailAuthService {
         }
     }
 
+    public void authenticateAuthCode(Integer userSentAuthCode) {
+
+    }
+
 
 
 }
