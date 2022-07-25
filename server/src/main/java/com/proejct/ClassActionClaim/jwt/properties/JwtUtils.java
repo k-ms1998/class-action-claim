@@ -1,7 +1,7 @@
 package com.proejct.ClassActionClaim.jwt.properties;
 
-import io.jsonwebtoken.JwsHeader;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 
 import java.security.Key;
@@ -10,6 +10,7 @@ import java.util.Date;
 /**
  * JWT 토큰을 생성하거나 Parsing 하는 메소드를 제공합니다
  */
+@Slf4j
 public class JwtUtils {
 
     /**
@@ -17,12 +18,17 @@ public class JwtUtils {
      */
     public static String getSubjectFromToken(String token) {
         // JWT Token 에서 AuthCode 가져오기
-        return Jwts.parserBuilder()
-                .setSigningKeyResolver(KeyResolver.instance) // == new KeyResolver(); KeyResolver 에서 resolveSigningKey 를 통해 Token 의 Secret Key 반환 -> Secret Key 로 Signature 검증
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject(); // Token 을 생성할때 Subject 로 생성했기 때문에 Token 에서 Email 을 가져오기 위해서는 Subject 반환
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKeyResolver(KeyResolver.instance) // == new KeyResolver(); KeyResolver 에서 resolveSigningKey 를 통해 Token 의 Secret Key 반환 -> Secret Key 로 Signature 검증
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();      // Token 을 생성할때 Subject 로 생성했기 때문에 Token 에서 Email 을 가져오기 위해서는 Subject 반환
+
+        } catch (Exception e) {
+            throw new ExpiredJwtException(null, null, "JWT Token Expired");
+        }
     }
 
     /**
