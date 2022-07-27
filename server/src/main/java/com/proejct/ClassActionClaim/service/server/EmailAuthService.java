@@ -14,8 +14,8 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Arrays;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -23,8 +23,6 @@ import java.util.Arrays;
 public class EmailAuthService {
 
     private final JavaMailSender mailSender;
-
-    public static final String EMAIL_SUBJECT = "TEST EMAIL C.A.C";
     public static final String SENDER_EMAIL = "k_ms1998@naver.com";
 
     /**
@@ -40,12 +38,14 @@ public class EmailAuthService {
 
             msgHelper.setFrom(SENDER_EMAIL);
             msgHelper.setTo(toEmail);
-            msgHelper.setSubject(EMAIL_SUBJECT);
 
-            msgHelper.setText("This is a test.");
+            Random random = new Random();
+            String authCode = String.valueOf(random.nextInt(999999));
+            msgHelper.setSubject(createMessage(authCode));
+
             mailSender.send(message);
 
-            String authCode = "12345";
+
             EmailAuthResponse emailAuthResponse = new EmailAuthResponse(toEmail, authCode);
 
             String token = JwtUtils.createToken(emailAuthResponse.toString());
@@ -73,6 +73,7 @@ public class EmailAuthService {
                     .map(c -> c.getValue())
                     .orElse(null);
         } catch (Exception e) {
+            log.info("!! Couldn't Retrieve Token !!");
             e.printStackTrace();
         }
 
@@ -93,9 +94,14 @@ public class EmailAuthService {
                 }
             }
         }
+        else{
+            log.info("!! Token is NULL !!");
+        }
+    }
 
-
-
+    private String createMessage(String authCode) {
+        return "Please input the following code: \n"
+                +authCode;
     }
 
 }
