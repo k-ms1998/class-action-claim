@@ -27,11 +27,12 @@ public class Notes extends IdDateTimeEntity {
     @JoinColumn
     Student student;
 
-    public Notes(String title, String content, Integer week, Lecture lecture) {
+    public Notes(String title, String content, Integer week, Lecture lecture, Student student) {
 
         this.title = title;
         this.content = content;
         this.week = week;
         this.lecture = lecture;
+        this.student = student;
     }
 }
