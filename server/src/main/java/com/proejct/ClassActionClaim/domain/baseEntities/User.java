@@ -1,6 +1,8 @@
 package com.proejct.ClassActionClaim.domain.baseEntities;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -10,6 +12,7 @@ import java.util.Collections;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class User extends DateTimeEntity{
 
     @Id
