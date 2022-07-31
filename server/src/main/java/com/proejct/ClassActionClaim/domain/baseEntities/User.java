@@ -12,7 +12,6 @@ import java.util.Collections;
 @Table(name = "users")
 public abstract class User extends DateTimeEntity{
 
-
     @Id
     @GeneratedValue
     private Long id;
