@@ -16,6 +16,11 @@ public class NotesRequestDTO {
     Long lectureId;
     Long studentId;
 
+    public NotesRequestDTO(Long lectureId, Long studentId) {
+        this.lectureId = lectureId;
+        this.studentId = studentId;
+    }
+
     public NotesRequestDTO(String title, String content, Integer week, Long lectureId, Long studentId) {
         this.title = title;
         this.content = content;
