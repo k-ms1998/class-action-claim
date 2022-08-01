@@ -145,4 +145,44 @@ class NotesServiceTest {
         Assertions.assertThat(allNotes).hasSize(1);
     }
 
+    @Test
+    void givenNoteRequest_whenExecutingDeleteNote_thenSuccess() {
+        // Given
+        Student student = new Student("userA", "passwordA", "test@sju.ac.kr");
+        Student savedStudent = studentRepository.save(student);
+
+        Lecture lecture = new Lecture("001", "LecA", "ProfA");
+        Lecture savedLecture = lectureRepository.save(lecture);
+
+        String title = "Title #1";
+        String content = "Content #1";
+        Integer week = 1;
+        Long studentId = savedStudent.getId();
+        Long lectureId = savedLecture.getId();
+
+        Notes note = new Notes(title, content, week , savedLecture, savedStudent);
+        Notes savedNote = notesRepository.save(note);
+
+        NotesRequestDTO notesRequestDTO = new NotesRequestDTO(title, content, week, lectureId, studentId);
+
+        // When
+        ToClientResponse<NotesResponseDTO> notesResponseDTOToClientResponse = notesService.removeNote(savedNote.getId(), notesRequestDTO);
+
+        // Then
+        String message = notesResponseDTOToClientResponse.getMessage();
+        Assertions.assertThat(message).isEqualTo("Note Removed.");
+
+        Integer count = notesResponseDTOToClientResponse.getCount();
+        Assertions.assertThat(count).isEqualTo(1);
+
+        NotesResponseDTO data = notesResponseDTOToClientResponse.getData();
+        String removedTitle = data.getTitle();
+        String removedContent = data.getContent();
+        Assertions.assertThat(removedTitle).isEqualTo("Title #1");
+        Assertions.assertThat(removedContent).isEqualTo("Content #1");
+
+        List<Notes> allNotes = notesRepository.findAll();
+        Assertions.assertThat(allNotes).hasSize(0);
+    }
+
 }
