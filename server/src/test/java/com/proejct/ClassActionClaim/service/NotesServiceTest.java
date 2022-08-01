@@ -5,6 +5,7 @@ import com.proejct.ClassActionClaim.domain.Notes;
 import com.proejct.ClassActionClaim.domain.Student;
 import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequestDTO;
 import com.proejct.ClassActionClaim.dto.ResponseBody.NotesResponseDTO;
+import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.repository.LectureRepository;
 import com.proejct.ClassActionClaim.repository.NotesRepository;
 import com.proejct.ClassActionClaim.repository.StudentRepository;
@@ -64,6 +65,40 @@ class NotesServiceTest {
 
         List<Notes> allNotes = notesRepository.findAll();
         Assertions.assertThat(allNotes).hasSize(1);
+    }
+
+    @Test
+    void givenNoteRequest_whenExecutingGetNotes_thenSuccess() {
+        // Given
+        Student student = new Student("userA", "passwordA", "test@sju.ac.kr");
+        Student savedStudent = studentRepository.save(student);
+
+        Lecture lecture = new Lecture("001", "LecA", "ProfA");
+        Lecture savedLecture = lectureRepository.save(lecture);
+
+        String title = "Title #1";
+        String content = "Content #1";
+        Integer week = 1;
+        Long studentId = savedStudent.getId();
+        Long lectureId = savedLecture.getId();
+
+        NotesRequestDTO notesRequestDTOA = new NotesRequestDTO(title, content, week, studentId, lectureId);
+        NotesRequestDTO notesRequestDTOB = new NotesRequestDTO(title, content, week, studentId, lectureId);
+
+        notesService.saveNote(notesRequestDTOA);
+        notesService.saveNote(notesRequestDTOB);
+
+        // When
+        ToClientResponse<List<NotesResponseDTO>> result = notesService.getNotesByWeek(1, new NotesRequestDTO(savedLecture.getId(), savedStudent.getId()));
+
+        // Then
+        String message = result.getMessage();
+        Integer count = result.getCount();
+        List<NotesResponseDTO> data = result.getData();
+
+        Assertions.assertThat(message).isEqualTo("Fetched Notes");
+        Assertions.assertThat(count).isEqualTo(2);
+        Assertions.assertThat(data).hasSize(2);
     }
 
 }
