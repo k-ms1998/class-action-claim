@@ -9,4 +9,4 @@ const Sign_up = () => {
     );
 };
 
-export default About;
+export default Sign_up;
