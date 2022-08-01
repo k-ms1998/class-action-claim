@@ -26,5 +26,9 @@ public class NotesController {
     public NotesResponseDTO saveNotes(@RequestBody NotesRequestDTO requestDTO) {
         return notesService.saveNote(requestDTO);
     }
-    
+
+    @PostMapping("/update")
+    public ToClientResponse<NotesResponseDTO> updateNotes(@ModelAttribute Long noteId, @RequestBody NotesRequestDTO requestDTO) {
+        return notesService.updateNote(noteId, requestDTO);
+    }
 }

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +55,33 @@ public class NotesService {
         NotesResponseDTO notesResponseDTO = new NotesResponseDTO(savedNote.getTitle(), savedNote.getContent());
 
         return notesResponseDTO;
+    }
+
+    public ToClientResponse<NotesResponseDTO> updateNote(Long noteId, NotesRequestDTO requestDTO) {
+        Optional<Notes> noteOptional = notesRepository.findById(noteId);
+        // Check if note exists
+        if (noteOptional == null) {
+            return new ToClientResponse<NotesResponseDTO>("Error: Couldn't find note.", 0, null);
+        }
+
+        // Check if the studentId, lectureId and week are a match
+        Notes note = noteOptional.get();
+        if (note.getStudent().getId() != requestDTO.getStudentId()
+                || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
+            return new ToClientResponse<NotesResponseDTO>("Error: Owner and/or lecture doesn't match.", 0, null);
+        }
+
+        // Update Note
+        String updatedTitle = requestDTO.getTitle();
+        String updatedContent = requestDTO.getContent();
+        note.updateTitle(updatedTitle);
+        note.updateContent(updatedContent);
+
+        // Save Updated Note
+        Notes updatedNote = notesRepository.save(note);
+        NotesResponseDTO updatedNoteDto = new NotesResponseDTO(updatedNote.getTitle(), updatedNote.getContent());
+
+        return new ToClientResponse<NotesResponseDTO>("Note Updated.", 1, updatedNoteDto);
     }
 
     protected Lecture getLecture(Long id) {
