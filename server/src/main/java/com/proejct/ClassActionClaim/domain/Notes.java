@@ -35,4 +35,12 @@ public class Notes extends IdDateTimeEntity {
         this.lecture = lecture;
         this.student = student;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
