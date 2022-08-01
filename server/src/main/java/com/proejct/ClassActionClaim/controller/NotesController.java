@@ -31,4 +31,9 @@ public class NotesController {
     public ToClientResponse<NotesResponseDTO> updateNotes(@ModelAttribute Long noteId, @RequestBody NotesRequestDTO requestDTO) {
         return notesService.updateNote(noteId, requestDTO);
     }
+
+    @PostMapping("/remove")
+    public ToClientResponse<NotesResponseDTO> removeNotes(@ModelAttribute Long noteId, @RequestBody NotesRequestDTO requestDTO) {
+        return notesService.removeNote(noteId, requestDTO);
+    }
 }

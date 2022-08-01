@@ -2,6 +2,7 @@ package com.proejct.ClassActionClaim.service;
 
 import com.proejct.ClassActionClaim.domain.Lecture;
 import com.proejct.ClassActionClaim.domain.Notes;
+import com.proejct.ClassActionClaim.domain.QNotes;
 import com.proejct.ClassActionClaim.domain.Student;
 import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequestDTO;
 import com.proejct.ClassActionClaim.dto.ResponseBody.NotesResponseDTO;
@@ -84,6 +85,24 @@ public class NotesService {
         return new ToClientResponse<NotesResponseDTO>("Note Updated.", 1, updatedNoteDto);
     }
 
+    public ToClientResponse<NotesResponseDTO> removeNote(Long noteId, NotesRequestDTO requestDTO) {
+        Optional<Notes> noteOptional = notesRepository.findById(noteId);
+        if (noteOptional == null) {
+            return new ToClientResponse<NotesResponseDTO>("Error: Couldn't find note.", 0, null);
+        }
+
+        Notes note = noteOptional.get();
+        if (note.getStudent().getId() != requestDTO.getStudentId()
+                || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
+            return new ToClientResponse<NotesResponseDTO>("Error: Owner and/or lecture doesn't match.", 0, null);
+        }
+
+        notesRepository.delete(note);
+        NotesResponseDTO deletedNote = new NotesResponseDTO(note.getTitle(), note.getContent());
+
+        return new ToClientResponse<NotesResponseDTO>("Note Removed.", 1, deletedNote);
+    }
+
     protected Lecture getLecture(Long id) {
         return lectureRepository.findById(id).get();
     }
@@ -91,4 +110,5 @@ public class NotesService {
     protected Student getStudent(Long id) {
         return studentRepository.findById(id).get();
     }
+
 }
