@@ -1,7 +1,10 @@
 package com.proejct.ClassActionClaim.domain;
 
 import com.proejct.ClassActionClaim.domain.baseEntities.User;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 
@@ -16,6 +19,7 @@ import javax.validation.constraints.Email;
  */
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Student extends User {
 
     @Column(nullable = false)
