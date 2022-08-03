@@ -5,10 +5,7 @@ import com.proejct.ClassActionClaim.dto.ResponseBody.ClaimResponseDTO;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.service.ClaimService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +19,11 @@ public class ClaimController {
     @GetMapping
     public ToClientResponse<List<ClaimResponseDTO>> getClaims(@RequestBody ClaimRequestDTO claimRequestDTO) {
         return claimService.getClaims(claimRequestDTO);
+    }
+
+    @PostMapping("/save")
+    public ToClientResponse<ClaimResponseDTO> saveClaims(@RequestBody ClaimRequestDTO claimRequestDTO) {
+        return claimService.saveClaims(claimRequestDTO);
     }
 
 
