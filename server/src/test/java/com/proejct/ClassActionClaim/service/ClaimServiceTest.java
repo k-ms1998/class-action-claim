@@ -33,6 +33,45 @@ class ClaimServiceTest {
     private StudentRepository studentRepository;
 
     @Test
+    void givenClaimRequest_whenExecutingSaveClaims_thenSuccess() {
+        // Given
+        Lecture lecture = lectureRepository.save(new Lecture("001", "Lecture A", "Kim"));
+
+        Student student = studentRepository.save(new Student("StudentA", "passwordA", "test@sju.ac.kr"));
+
+        Claim claim = new Claim("Claim Midterm", "Content Midterm", ClaimType.MIDTERM, lecture, student);
+
+        // When
+        ClaimRequestDTO claimRequestDTO = new ClaimRequestDTO(claim.getTitle(), claim.getContent(), "MIDTERM", lecture.getId(), student.getId());
+        ToClientResponse<ClaimResponseDTO> result = claimService.saveClaims(claimRequestDTO);
+
+        // Then
+        /**
+         * Check returned data
+         */
+        String message = result.getMessage();
+        Assertions.assertThat(message).isEqualTo("Claim Saved.");
+
+        Integer count = result.getCount();
+        Assertions.assertThat(count).isEqualTo(1);
+
+        ClaimResponseDTO data = result.getData();
+        Assertions.assertThat(data.getTitle()).isEqualTo("Claim Midterm");
+
+        /**
+         * Check if the claim is saved
+         */
+        List<Claim> all = claimRepository.findAll();
+        Assertions.assertThat(all).hasSize(1);
+
+        Claim first = all.get(0);
+        Assertions.assertThat(List.of(first.getTitle(), first.getContent(), first.getUpVotes(),
+                        first.getClaimType(), first.getLecture().getId(), first.getStudent().getId()))
+                .containsExactly(claim.getTitle(), claim.getContent(), claim.getUpVotes(), claim.getClaimType(), lecture.getId(), student.getId());
+
+    }
+
+    @Test
     void givenClaimRequest_whenExecutingGetClaims_thenSuccess() {
         // Given
         Lecture lectureA = lectureRepository.save(new Lecture("001", "Lecture A", "Kim"));
