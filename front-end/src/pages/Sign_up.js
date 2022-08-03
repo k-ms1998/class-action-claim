@@ -3,7 +3,6 @@ import React, {useState} from 'react';
 import './Sign_up.module.css';
 import '../components/navbar/Navbar.css';
 import main_logo from '../img/main_logo.png';
-import home_style from './Home.module.css';
 import { MenuItems } from "../components/navbar/MenuItems";
 
 const Sign_up = () => {
@@ -40,7 +39,7 @@ const Sign_up = () => {
                             </h3>
                             <span class="box int_id">
                                 <input type="text" id="id" class="int" maxlength="20"/>
-                                <span class="step_url">@naver.com</span>
+                                <span class="step_url">@sju.ac.kr</span>
                             </span>
                             <span class="error_next_box"></span>
                         </div>
