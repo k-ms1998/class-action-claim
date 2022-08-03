@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import '../components/navbar/Navbar.css';
-import './Home.css'
+import home_style from './Home.module.css';
 import main_logo from '../img/main_logo.png';
 import { MenuItems } from "../components/navbar/MenuItems";
 
@@ -33,13 +33,13 @@ const Home = () => {
                     })}
                 </ul>
             </nav>
-            <body class='background'>
-                <div id='wrap'>
-                    <footer>
+            <body className={home_style.body}>
+                <div id={home_style.wrap}>
+                    <footer className={home_style.footer}>
                         <p>
-                            <span>제작 : izony</span><br/>
-                            <span>저자 : izony</span><br/>
-                            <span>저자 : izony</span>
+                            <span>개발자 : Izony | k-ms1998 | youhs1125</span><br/>
+                            <span>Github : https://github.com/k-ms1998/class-action-claim</span><br/>
+                            <span>버전 : 0.1 </span>
                         </p>
                     </footer>
                 </div>
