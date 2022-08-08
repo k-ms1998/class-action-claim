@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 
-import './Sign_up.module.css';
-import '../components/navbar/Navbar.css';
-import main_logo from '../img/main_logo.png';
-import { MenuItems } from "../components/navbar/MenuItems";
+import styles from './Sign_up.module.css';
+import logo from '../img/class_action_claim.png';
 
 const Sign_up = () => {
     const [clicked, setClicked] = useState(false);
@@ -11,82 +9,69 @@ const Sign_up = () => {
     const handleClick = () => {
         setClicked(!clicked);
     }
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('izony');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const member = { username, password, name };
+
+        fetch('http://localhost:8080/student/signup', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(member)
+        })
+        .then(() => {
+            console.log('회원가입 완료');
+        })
+    }
+
     return (
-        <div>
-            <nav className="Navbar">
-                <h1 className="navbar-logo"><img src={main_logo} alt='React'/></h1>
-                <div className="menu-icon" onClick={handleClick}>
-                    <i className={clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
-                </div>
-                <ul className={clicked ? 'nav-menu active' : 'nav-menu'}>
-                    {MenuItems.map((item, index)=>{
-                        return (
-                            <li key={index}>
-                                <a className={item.cName} href={item.url}>
-                                    {item.title}
-                                </a>
-                            </li>
-                        )
-                    })}
-                </ul>
-            </nav>
+        <div className={styles.content}>
             <body>
-                <div id="wrapper">
-                    <div id="content">
-                        <div>
-                            <h3 class="join_title">
-                                <label for="id">아이디</label>
-                            </h3>
-                            <span class="box int_id">
-                                <input type="text" id="id" class="int" maxlength="20"/>
-                                <span class="step_url">@sju.ac.kr</span>
-                            </span>
-                            <span class="error_next_box"></span>
-                        </div>
-
-                        <div>
-                            <h3 class="join_title"><label for="pswd1">비밀번호</label></h3>
-                            <span class="box int_pass">
-                                <input type="text" id="pswd1" class="int" maxlength="20"/>
-                                <span id="alertTxt">사용불가</span>
-                                <img src="m_icon_pass.png" id="pswd1_img1" class="pswdImg"/>
-                            </span>
-                            <span class="error_next_box"></span>
-                        </div>
-                        <div>
-                            <h3 class="join_title"><label for="pswd2">비밀번호 재확인</label></h3>
-                            <span class="box int_pass_check">
-                                <input type="text" id="pswd2" class="int" maxlength="20"/>
-                                <img src="m_icon_check_disable.png" id="pswd2_img1" class="pswdImg"/>
-                            </span>
-                            <span class="error_next_box"></span>
-                        </div>
-                        <div>
-                            <h3 class="join_title"><label for="name">이름</label></h3>
-                            <span class="box int_name">
-                                <input type="text" id="name" class="int" maxlength="20"/>
-                            </span>
-                            <span class="error_next_box"></span>
-                        </div>
-
-                        <div>
-                            <h3 class="join_title"><label for="email">본인확인 이메일<span class="optional">(선택)</span></label></h3>
-                            <span class="box int_email">
-                                <input type="text" id="email" class="int" maxlength="100" placeholder="선택입력"/>
-                            </span>
-                            <span class="error_next_box">이메일 주소를 다시 확인해주세요.</span>    
-                        </div>
-
-                        <div class="btn_area">
-                            <button type="button" id="btnJoin">
-                                <span>가입하기</span>
-                            </button>
-                        </div>
-                    </div> 
-                </div> 
+                <div className={styles.main_content}>
+                    <body>
+                    <h2>회원가입</h2>
+                        <form onSubmit={handleSubmit}>
+                            <p>
+                                <label>이메일</label>
+                            </p>
+                            <input 
+                                type="text" 
+                                required
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                            <br/>
+                            <p>
+                                <label>비밀번호</label>
+                            </p>
+                            <input 
+                                type="text" 
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <p>
+                                <label>이름</label>
+                            </p>
+                            <input 
+                                type="text" 
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                            <br/>
+                            <br/>
+                            <br/>
+                            {<button>회원가입</button>}
+                        </form>
+                    </body>
+                </div>
             </body>
         </div>
     );
-};
-
+}
 export default Sign_up;
