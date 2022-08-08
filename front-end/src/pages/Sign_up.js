@@ -33,12 +33,13 @@ const Sign_up = () => {
             <body>
                 <div id="wrapper">
                     <div id="content">
+                        <form action="http://localhost:8080/student/signup" method="POST">
                         <div>
                             <h3 class="join_title">
                                 <label for="id">아이디</label>
                             </h3>
                             <span class="box int_id">
-                                <input type="text" id="id" class="int" maxlength="20"/>
+                                <input type="text" id="username" class="int" maxlength="20"/>
                                 <span class="step_url">@sju.ac.kr</span>
                             </span>
                             <span class="error_next_box"></span>
@@ -47,7 +48,7 @@ const Sign_up = () => {
                         <div>
                             <h3 class="join_title"><label for="pswd1">비밀번호</label></h3>
                             <span class="box int_pass">
-                                <input type="text" id="pswd1" class="int" maxlength="20"/>
+                                <input type="text" id="password" class="int" maxlength="20"/>
                                 <span id="alertTxt">사용불가</span>
                                 <img src="m_icon_pass.png" id="pswd1_img1" class="pswdImg"/>
                             </span>
@@ -72,16 +73,17 @@ const Sign_up = () => {
                         <div>
                             <h3 class="join_title"><label for="email">본인확인 이메일<span class="optional">(선택)</span></label></h3>
                             <span class="box int_email">
-                                <input type="text" id="email" class="int" maxlength="100" placeholder="선택입력"/>
+                                <input type="text" id="studentEmail" class="int" maxlength="100" placeholder="선택입력"/>
                             </span>
                             <span class="error_next_box">이메일 주소를 다시 확인해주세요.</span>    
                         </div>
 
                         <div class="btn_area">
-                            <button type="button" id="btnJoin">
+                            <button type="submit" id="btnJoin">
                                 <span>가입하기</span>
                             </button>
                         </div>
+                        </form>
                     </div> 
                 </div> 
             </body>

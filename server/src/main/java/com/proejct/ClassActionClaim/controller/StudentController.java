@@ -21,8 +21,9 @@ public class StudentController {
     }
 
     @PostMapping("/signup")
-    public UserResponse studentSignUp(@RequestBody StudentRequestDTO studentRequestDTO) {
-        log.info("[POST] /student/signup");
+    public UserResponse studentSignUp(@ModelAttribute String username, @ModelAttribute String password, @ModelAttribute String studentEmail) {
+        StudentRequestDTO studentRequestDTO = StudentRequestDTO.of(username, password, studentEmail);
+        log.info("[POST] /student/signup => " + studentRequestDTO);
         return studentService.addStudent(studentRequestDTO);
     }
 }
