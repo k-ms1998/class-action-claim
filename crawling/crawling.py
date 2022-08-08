@@ -1,12 +1,16 @@
 import pymysql
 import pandas as pd
 import warnings
+from datetime import datetime
 warnings.simplefilter("ignore")
 
-def readEXCEL():
-    filename = 'schedule.xlsx'
-    df = pd.read_excel(filename, engine='openpyxl')
-
+def readEXCEL(index):
+    fileName = './lecture_files/강의시간표_'+datetime.today().strftime("%Y-%m-%d")
+    if(index > 0):
+        fileName += ' ({}).xlsx'.format(index)
+    else:
+        fileName += '.xlsx'
+    df = pd.read_excel(fileName)
     return df
 
 def getScheduleName(df):
@@ -153,7 +157,13 @@ def getTotalDataFrame(df):
     day_list = []
     start_list = []
     end_list = []
+# 교수명 Nan 변형
+    for i in range(0,len(df.index)):
+        temp = df["professorName"].iloc[i]
+        if(type(temp) != type("str")):
+            df["professorName"].iloc[i] = "null"
 
+# 시간 Nan 값 변형, 시간대 분할
     for i in range(0,len(df.index)):
         temp = df["time"].iloc[i]
         if(type(temp) != type("str")):
@@ -162,26 +172,46 @@ def getTotalDataFrame(df):
 
    
     for i in range(0,len(df.index)):
-        flag = 0
+        flag = 1
 
         for time in df["time"].iloc[i]:
             j = 0
             for j in range(0,len(time)):
                 if(time == "null"):
-                    flag = 1
-                    break
+                    flag *= 2
+                if(df["professorName"].iloc[i] == 'null'):
+                    flag *= 3
                 if(time[j].isdigit()):
                     break
-                temp = convertDay(time[j])
-                day_list.append(temp)
+                
                 id_list.append(df["courseId"].iloc[i])
                 class_list.append(df["class"].iloc[i])
                 department_list.append(df["department"].iloc[i])
                 courseName_list.append(df["courseName"].iloc[i])
                 courseType_list.append(df["courseType"].iloc[i])
                 credit_list.append(df["credit"].iloc[i])
-                professorName_list.append(df["professorName"].iloc[i])
-            if (flag == 1):
+
+                # 날짜가 없는 경우
+                if(flag % 2 == 0):
+                    day_list.append('null')
+                    start_list.append('null')
+                    end_list.append('null')
+                    if(flag % 3 == 0):
+                        professorName_list.append('null')
+                    else:
+                        professorName_list.append(df["professorName"].iloc[i])
+                    break
+
+                
+                temp = convertDay(time[j])
+                day_list.append(temp)
+
+                # 교수가 없는 경우
+                if(flag % 3 == 0):
+                    professorName_list.append('null')
+                else:
+                    professorName_list.append(df["professorName"].iloc[i])
+            if(flag % 2 == 0):
                 continue
             start,end = (time[j:]).split("-")
             for k in range(0,j):
@@ -292,13 +322,20 @@ def checkDB():
 
     conn.close()
 
-course_df = readEXCEL()
-departmentName = getScheduleName(course_df)
-createListTB(departmentName)
-insertListData(course_df, departmentName)
+# course_df = readEXCEL()
+# departmentName = getScheduleName(course_df)
+# createListTB(departmentName)
+# insertListData(course_df, departmentName)
 
-createTimeTB(departmentName)
-insertTimeData(course_df,departmentName)
+# createTimeTB(departmentName)
+# insertTimeData(course_df,departmentName)
+
+# print(datetime.today().strftime("%Y-%m-%d"))
+
+departmentName = "schedule"
 
 createTotalTB(departmentName)
-insertTotalData(course_df,departmentName)
+
+for i in range(0,83):
+    course_df = readEXCEL(i)
+    insertTotalData(course_df,departmentName)
