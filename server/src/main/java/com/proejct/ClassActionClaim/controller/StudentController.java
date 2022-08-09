@@ -17,12 +17,14 @@ public class StudentController {
 
     @GetMapping("/signup")
     public String signup() {
+        log.info("[GET] /student/signup");
         return "signUpPage";
     }
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup")
     public UserResponse studentSignUp(@RequestBody StudentRequestDTO studentRequestDTO) {
-        log.info("[POST] /student/signup");
+        log.info("[POST] /student/signup : " + studentRequestDTO);
+
         return studentService.addStudent(studentRequestDTO);
     }
 }

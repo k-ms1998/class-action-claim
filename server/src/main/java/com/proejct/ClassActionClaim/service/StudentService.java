@@ -19,14 +19,14 @@ public class StudentService {
 
     @Transactional
     public UserResponse addStudent(StudentRequestDTO studentRequestDTO) {
-        String username = studentRequestDTO.getUsername();
+        String name = studentRequestDTO.getName();
         String password = studentRequestDTO.getPassword();
         String studentEmail = studentRequestDTO.getStudentEmail();
         String authority = "ROLE_STUDENT";
 
-        Student student = Student.of(username, password, studentEmail);
+        Student student = Student.of(name, password, studentEmail);
         log.info("Student Created");
-        studentRepository.save(student);
+        Student saved = studentRepository.save(student);
         log.info("Student Saved");
 
         return new UserResponse("Student Sign Up Successful");

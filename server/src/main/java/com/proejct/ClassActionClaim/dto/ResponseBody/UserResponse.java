@@ -14,4 +14,9 @@ public class UserResponse<T> {
     public UserResponse(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "{" + this.getMessage() + " }";
+    }
 }

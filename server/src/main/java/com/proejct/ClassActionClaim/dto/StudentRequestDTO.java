@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class StudentRequestDTO {
 
     @NotNull
-    private String username;
+    private String name;
 
     @NotNull
     private String password;
@@ -21,14 +21,14 @@ public class StudentRequestDTO {
     @Email
     private String studentEmail;
 
-    public StudentRequestDTO(String username, String password, String studentEmail) {
-        this.username = username;
+    public StudentRequestDTO(String name, String password, String studentEmail) {
+        this.name = name;
         this.password = password;
         this.studentEmail = studentEmail;
     }
 
 
-    public static StudentRequestDTO of(String username, String password, String studentEmail) {
-        return new StudentRequestDTO(username, password, studentEmail);
+    public static StudentRequestDTO of(String name, String password, String studentEmail) {
+        return new StudentRequestDTO(name, password, studentEmail);
     }
 }

@@ -19,13 +19,13 @@ public abstract class User extends DateTimeEntity{
     @GeneratedValue
     private Long id;
 
-    private String username;
+    private String name;
     private String password;
 
     private String authority;
 
-    public User(String username, String password, String authority) {
-        this.username = username;
+    public User(String name, String password, String authority) {
+        this.name = name;
         this.password = password;
         this.authority = authority;
     }
