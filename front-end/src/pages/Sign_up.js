@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 
-import styles from './Sign_up.module.css';
-import logo from '../img/class_action_claim.png';
+import styles from './Sign.module.css';
 
 const Sign_up = () => {
     const [clicked, setClicked] = useState(false);
@@ -66,7 +65,7 @@ const Sign_up = () => {
                             <br/>
                             <br/>
                             <br/>
-                            {<button>회원가입</button>}
+                            {<button className={styles.button_background}>회원가입</button>}
                         </form>
                     </body>
                 </div>
