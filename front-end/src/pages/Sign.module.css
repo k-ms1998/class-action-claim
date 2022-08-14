@@ -1,10 +1,16 @@
-body {
+* {
     margin: 0;
-    height: 100%;
+    padding: 0;
+}
+body {
+    border-top: 0;
+    height: 100vh;
     font-family: Dotum,'돋움',Helvetica,sans-serif;
     text-align: center;
 }
 p {
+    margin-top: 20px;
+    margin-bottom: 5px;
     margin-left: 15%;
     text-align: left; /* 문자들의 가운데 정렬을 해제 */
 }
@@ -18,6 +24,9 @@ input {
     width: 70%;
     border: solid 2px #e8e8e8; 
     border-radius: 8px;
+}
+h2 {
+    padding: 10% 0% 10% 0%;
 }
 .button_background {
     height: 40px;
@@ -36,4 +45,11 @@ input {
 .content{
     height: 100vh;
     background: #eeeeee;
+}
+.input_valid {
+    height: 40px;
+    width: 65%;
+    border: solid 2px #e8e8e8; 
+    border-radius: 8px;
+    text-align: left;
 }
