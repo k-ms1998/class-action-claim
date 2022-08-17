@@ -10,5 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailAuthRequest {
     String email;
+    String password;
+    String name;
     String code;
 }

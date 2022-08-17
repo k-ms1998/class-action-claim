@@ -2,8 +2,12 @@ package com.proejct.ClassActionClaim.service.server;
 
 import com.proejct.ClassActionClaim.dto.RequestBody.EmailAuthRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.EmailAuthResponse;
+import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
+import com.proejct.ClassActionClaim.dto.ResponseBody.UserResponse;
+import com.proejct.ClassActionClaim.dto.StudentRequestDTO;
 import com.proejct.ClassActionClaim.jwt.properties.JwtProperties;
 import com.proejct.ClassActionClaim.jwt.properties.JwtUtils;
+import com.proejct.ClassActionClaim.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,16 +26,19 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailAuthService {
 
+    private final StudentService studentService;
     private final JavaMailSender mailSender;
-    public static final String SENDER_EMAIL = "k_ms1998@naver.com";
+    private static final String SENDER_EMAIL = "k_ms1998@naver.com";
+    private static final String EMAIL_SUBJECT = "Class-Action-Claim";
 
     /**
      * Reference:
      * https://docs.spring.io/spring-framework/docs/3.0.x/spring-framework-reference/html/mail.html
      *
-     * @param toEmail
      */
-    public void sendAuthCode(String toEmail, HttpServletRequest request, HttpServletResponse response){
+    public void sendAuthCode(StudentRequestDTO studentRequestDTO, HttpServletRequest request, HttpServletResponse response){
+        log.info("[sendAuthCode] studentRequestDTO = " + studentRequestDTO);
+        String toEmail = studentRequestDTO.getStudentEmail();
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper msgHelper = new MimeMessageHelper(message);
@@ -41,7 +48,8 @@ public class EmailAuthService {
 
             Random random = new Random();
             String authCode = String.valueOf(random.nextInt(999999));
-            msgHelper.setSubject(createMessage(authCode));
+            msgHelper.setSubject(EMAIL_SUBJECT);
+            msgHelper.setText(createMessage(authCode));
 
             mailSender.send(message);
 
@@ -61,7 +69,7 @@ public class EmailAuthService {
         }
     }
 
-    public void authenticateAuthCode(EmailAuthRequest emailAuthData, HttpServletRequest request, HttpServletResponse response) {
+    public ToClientResponse authenticateAuthCode(EmailAuthRequest emailAuthData, HttpServletRequest request, HttpServletResponse response) {
         String reqEmail = emailAuthData.getEmail();
         String reqCode = emailAuthData.getCode();
 
@@ -75,6 +83,7 @@ public class EmailAuthService {
         } catch (Exception e) {
             log.info("!! Couldn't Retrieve Token !!");
             e.printStackTrace();
+            return new ToClientResponse("Unsuccessful", 0, 400, null);
         }
 
         if (token != null) {
@@ -88,15 +97,28 @@ public class EmailAuthService {
                 String tokenCode = subjectSplit[1];
 
                 if (tokenEmail.equals(reqEmail) && tokenCode.equals(reqCode)) {
+                    /**
+                     * 인증번호 일치
+                     */
                     log.info("{ email = " + tokenEmail + ", code = " + tokenCode + " }");
+
+                    String reqName = emailAuthData.getName();
+                    String reqPassword = emailAuthData.getPassword();
+                    StudentRequestDTO studentRequestDTO = new StudentRequestDTO(reqName, reqPassword, reqEmail);
+                    studentService.addStudent(studentRequestDTO);
+                    return new ToClientResponse("Sign Up Successful", 0, 200, null);
                 } else {
                     log.info("Incorrect Code");
+                    return new ToClientResponse("Unsuccessful", 0, 400, null);
                 }
             }
         }
         else{
             log.info("!! Token is NULL !!");
+            return new ToClientResponse("Unsuccessful", 0, 400, null);
         }
+
+        return new ToClientResponse("Unsuccessful", 0, 400, null);
     }
 
     private String createMessage(String authCode) {

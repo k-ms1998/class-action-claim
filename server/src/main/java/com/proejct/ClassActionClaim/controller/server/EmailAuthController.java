@@ -1,6 +1,7 @@
 package com.proejct.ClassActionClaim.controller.server;
 
 import com.proejct.ClassActionClaim.dto.RequestBody.EmailAuthRequest;
+import com.proejct.ClassActionClaim.dto.StudentRequestDTO;
 import com.proejct.ClassActionClaim.service.server.EmailAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +23,13 @@ public class EmailAuthController {
     /**
      * Email 전송시
      */
-    @GetMapping("/test/mail")
-    public void sendAuthCode(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/mail/send_auth_code")
+    public void sendAuthCode(@RequestBody StudentRequestDTO studentRequestDTO, HttpServletRequest request, HttpServletResponse response) {
 
-        emailAuthService.sendAuthCode("kms1998@sju.ac.kr", request, response);
+        emailAuthService.sendAuthCode(studentRequestDTO, request, response);
     }
 
-    @PostMapping("/test/mail")
+    @PostMapping("/mail/authenticate")
     public void authenticateCode(@RequestBody EmailAuthRequest emailAuthData, HttpServletRequest request, HttpServletResponse response) {
         emailAuthService.authenticateAuthCode(emailAuthData, request, response);
     }
