@@ -6,13 +6,13 @@ const Sign_up = () => {
     const [clicked, setClicked] = useState(false);
     //false = bars, true = times
 
-    const [username, setUsername] = useState('');
+    const [studentEmail, setStudentEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const member = { username, password, name };
+        const member = { studentEmail, password, name };
 
         let errors = {};
         
@@ -20,11 +20,11 @@ const Sign_up = () => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
         
         //이메일 값이 없을시
-        if (!username) {
-          errors.username = "Cannot be blank";
+        if (!studentEmail) {
+          errors.studentEmail = "Cannot be blank";
           //이메일 정규식 표현이 옳지 않을시
-        } else if (!regex.test(username)) {
-          errors.username = "Invalid email format";
+        } else if (!regex.test(studentEmail)) {
+          errors.studentEmail = "Invalid email format";
         }
         
         //비밀번호 값이 없을시
@@ -34,8 +34,8 @@ const Sign_up = () => {
         } else if (password.length < 4) {
           errors.password = "Password must be more than 4 characters";
         }
-        if(errors.username != undefined){
-            alert(errors.username);
+        if(errors.studentEmail != undefined){
+            alert(errors.studentEmail);
         }
         else if(errors.password != undefined){
             alert(errors.password);
@@ -44,7 +44,7 @@ const Sign_up = () => {
             window.location.href = './sign_up/validation';
             setClicked(!clicked);
             
-            fetch('http://localhost:8080/student/signup', {
+            fetch('http://localhost:8080/mail/send_auth_code', {
                 method: 'POST',
                 headers: { "Content-Type" : "application/json" },
                 body: JSON.stringify(member)
@@ -68,8 +68,8 @@ const Sign_up = () => {
                             <input 
                                 type="text" 
                                 required
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                value={studentEmail}
+                                onChange={(e) => setStudentEmail(e.target.value)}
                             />
                             <p>
                                 <label>비밀번호</label>
