@@ -11,7 +11,7 @@ const Sign_in = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('izony');
+    const [name, setName] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();

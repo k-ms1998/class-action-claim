@@ -5,8 +5,6 @@ import home_style from './Home.module.css';
 import main_logo from '../img/main_logo.png';
 import { MenuItems } from "../components/navbar/MenuItems";
 
-import Button from '../components/Button'
-
 const Home = () => {
     const [clicked, setClicked] = useState(false);
     //false = bars, true = times
@@ -36,11 +34,9 @@ const Home = () => {
             <body className={home_style.body}>
                 <div id={home_style.wrap}>
                     <footer className={home_style.footer}>
-                        <p>
-                            <span>개발자 : Izony | k-ms1998 | youhs1125</span><br/>
-                            <span>Github : https://github.com/k-ms1998/class-action-claim</span><br/>
-                            <span>버전 : 0.1 </span>
-                        </p>
+                        <span>개발자 : Izony | k-ms1998 | youhs1125</span><br/>
+                        <span>Github : https://github.com/k-ms1998/class-action-claim</span><br/>
+                        <span>버전 : 0.1 </span>
                     </footer>
                 </div>
             </body>

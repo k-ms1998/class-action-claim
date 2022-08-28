@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { Link, useNavigate } from 'react-router-dom'
 import styles from './Sign.module.css';
+import Profile from './Profile'
 
 const Sign_up = () => {
     const [clicked, setClicked] = useState(false);
@@ -12,8 +12,6 @@ const Sign_up = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const member = { studentEmail, password, name };
-
         let errors = {};
         
         //정규식 표현
@@ -41,7 +39,8 @@ const Sign_up = () => {
             alert(errors.password);
         }
         else {
-            window.location.href = './sign_up/validation';
+            <Route path="/sign_up/validation" component={Profile} />
+            //window.location.href = './sign_up/validation';
             setClicked(!clicked);
             
             fetch('http://localhost:8080/mail/send_auth_code', {
