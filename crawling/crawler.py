@@ -10,6 +10,8 @@ driver = webdriver.Chrome()
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches',['enable-logging'])
 driver = webdriver.Chrome(options=options)
+ID = ''
+PassWd = ''
 
 url_login = "https://portal.sejong.ac.kr/jsp/login/loginSSL.jsp?rtUrl=sjpt.sejong.ac.kr/main/view/Login/doSsoLogin.do?p="
 url_myPage = "https://sjpt.sejong.ac.kr/main/view/Login/doSsoLogin.do?p="
@@ -25,12 +27,12 @@ tag_pw.clear()
 time.sleep(1)
 
 tag_id.click()
-pyperclip.copy('18011679')
+pyperclip.copy(ID)
 tag_id.send_keys(Keys.CONTROL, 'v')
 time.sleep(1)
 
 tag_pw.click()
-pyperclip.copy('Youhs8398')
+pyperclip.copy(PassWd)
 tag_pw.send_keys(Keys.CONTROL, 'v')
 time.sleep(1)
 
