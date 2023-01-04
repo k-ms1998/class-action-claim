@@ -1,104 +1,134 @@
-import React, {useState} from 'react';
-import styles from './Sign.module.css';
-import Profile from './Profile'
+import React, { Component } from "react";
+import { Form, Button } from "react-bootstrap";
+import axios from "axios";
+import $ from "jquery";
 
-const Sign_up = () => {
-    const [clicked, setClicked] = useState(false);
-    //false = bars, true = times
+axios.defaults.withCredentials = true;
+const headers = { withCredentials: true };
 
-    const [studentEmail, setStudentEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
+class Sign_up extends Component {
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        let errors = {};
-        
-        //정규식 표현
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-        
-        //이메일 값이 없을시
-        if (!studentEmail) {
-          errors.studentEmail = "Cannot be blank";
-          //이메일 정규식 표현이 옳지 않을시
-        } else if (!regex.test(studentEmail)) {
-          errors.studentEmail = "Invalid email format";
-        }
-        
-        //비밀번호 값이 없을시
-        if (!password) {
-          errors.password = "Cannot be blank";
-          //비밀번호의 길이(length)가 4글자 이하일 때
-        } else if (password.length < 4) {
-          errors.password = "Password must be more than 4 characters";
-        }
-        if(errors.studentEmail != undefined){
-            alert(errors.studentEmail);
-        }
-        else if(errors.password != undefined){
-            alert(errors.password);
-        }
+
+  join = () => {
+    const joinEmail = this.joinEmail.value;
+    const joinName = this.joinName.value;
+    const joinPw = this.joinPw.value;
+    const regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    const regExp2 = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
+    if (joinEmail === "" || joinEmail === undefined) {
+      alert("이메일 주소를 입력해주세요.");
+      this.joinEmail.focus();
+      return;
+    } 
+    else if (
+      joinEmail.match(regExp) === null ||
+      joinEmail.match(regExp) === undefined
+    ) {
+      alert("이메일 형식에 맞게 입력해주세요.");
+      this.joinEmail.value = "";
+      this.joinEmail.focus();
+      return;
+    } 
+    else if (joinName === "" || joinName === undefined) {
+      alert("이름을 입력해주세요.");
+      this.joinName.focus();
+      return;
+    } 
+    else if (joinPw === "" || joinPw === undefined) {
+      alert("비밀번호를 입력해주세요.");
+      this.joinPw.focus();
+      return;
+    } 
+    else if (
+      joinPw.match(regExp2) === null ||
+      joinPw.match(regExp2) === undefined
+    ) {
+      alert("비밀번호를 숫자와 문자, 특수문자 포함 8~16자리로 입력해주세요.");
+      this.joinPw.value = "";
+      this.joinPw.focus();
+      return;
+    }
+
+    const send_param = {
+      headers,
+      email: this.joinEmail.value,
+      name: this.joinName.value,
+      password: this.joinPw.value
+    };
+    axios
+      .post("http://localhost:8080/member/join", send_param)
+      //정상 수행
+      .then(returnData => {
+        if (returnData.data.message) {
+          alert(returnData.data.message);
+          //이메일 중복 체크
+          if (returnData.data.dupYn === "1") {
+            this.joinEmail.value = "";
+            this.joinEmail.focus();
+          } 
+          else {
+            this.joinEmail.value = "";
+            this.joinName.value = "";
+            this.joinPw.value = "";
+          }
+        } 
         else {
-            <Route path="/sign_up/validation" component={Profile} />
-            //window.location.href = './sign_up/validation';
-            setClicked(!clicked);
-            
-            fetch('http://localhost:8080/mail/send_auth_code', {
-                method: 'POST',
-                headers: { "Content-Type" : "application/json" },
-                body: JSON.stringify(member)
-            })
-            .then(() => {
-                console.log('회원가입 완료');
-            })
+          alert("회원가입 실패");
         }
+      })
+      //에러
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  render() {
+    const formStyle = {
+      margin: 50
+    };
+    const buttonStyle = {
+      marginTop: 10
     };
 
     return (
-        <div className={styles.content}>
-            <body>
-                <div className={styles.main_content}>
-                    <body>
-                    <h2>회원가입</h2>
-                        <form onSubmit={handleSubmit}>
-                            <p>
-                                <label>이메일</label>
-                            </p>
-                            <input 
-                                type="text" 
-                                required
-                                value={studentEmail}
-                                onChange={(e) => setStudentEmail(e.target.value)}
-                            />
-                            <p>
-                                <label>비밀번호</label>
-                            </p>
-                            <input 
-                                type="password" 
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <p>
-                                <label>이름</label>
-                            </p>
-                            <input 
-                                type="text" 
-                                required
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            <br/>
-                            <br/>
-                            <br/>
-                            <button type='submit' className={styles.button_background}>
-                                회원가입
-                            </button>
-                        </form>
-                    </body>
-                </div>
-            </body>
-        </div>
+      <Form style={formStyle}>
+        <Form.Group controlId="joinForm">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            maxLength="100"
+            ref={ref => (this.joinEmail = ref)}
+            placeholder="Enter email"
+          />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+          <Form.Label>name</Form.Label>
+          <Form.Control
+            type="text"
+            maxLength="20"
+            ref={ref => (this.joinName = ref)}
+            placeholder="name"
+          />
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            maxLength="64"
+            ref={ref => (this.joinPw = ref)}
+            placeholder="Password"
+          />
+          <Button
+            style={buttonStyle}
+            onClick={this.join}
+            variant="primary"
+            type="button"
+            block
+          >
+            회원가입
+          </Button>
+        </Form.Group>
+      </Form>
     );
+  }
 }
+
 export default Sign_up;
