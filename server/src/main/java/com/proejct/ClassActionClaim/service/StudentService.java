@@ -21,10 +21,10 @@ public class StudentService {
     public UserResponse addStudent(StudentRequestDTO studentRequestDTO) {
         String name = studentRequestDTO.getName();
         String password = studentRequestDTO.getPassword();
-        String studentEmail = studentRequestDTO.getStudentEmail();
+        String email = studentRequestDTO.getEmail();
         String authority = "ROLE_STUDENT";
 
-        Student student = Student.of(name, password, studentEmail);
+        Student student = Student.of(name, password, email);
         log.info("Student Created");
         Student saved = studentRepository.save(student);
         log.info("Student Saved");

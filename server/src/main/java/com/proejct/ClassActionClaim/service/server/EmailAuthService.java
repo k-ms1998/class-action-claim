@@ -38,7 +38,7 @@ public class EmailAuthService {
      */
     public void sendAuthCode(StudentRequestDTO studentRequestDTO, HttpServletRequest request, HttpServletResponse response){
         log.info("[sendAuthCode] studentRequestDTO = " + studentRequestDTO);
-        String toEmail = studentRequestDTO.getStudentEmail();
+        String toEmail = studentRequestDTO.getEmail();
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper msgHelper = new MimeMessageHelper(message);
