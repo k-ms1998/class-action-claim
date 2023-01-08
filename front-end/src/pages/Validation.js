@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-
 import styles from './Sign.module.css';
 
-const Validation = () => {
+const Validation = (props) => {
     const [minutes, setMinutes] = useState(10);
     const [seconds, setSeconds] = useState(0);
 
@@ -23,32 +22,40 @@ const Validation = () => {
         return () => clearInterval(countdown);
       }, [minutes, seconds]);
 
-    return (
-        <div className={styles.content}>
-            <body>
-                <div className={styles.main_content}>
-                    <body>
-                        <h2>회원가입</h2>
-                        <form>
-                            <p>
-                                <label>인증번호</label>
-                            </p>
-                            <input className={styles.input_valid}
-                                type="text" 
-                                required
-                            />
-                            <label>
-                                &nbsp;{minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-                            </label>
-                            <br/>
-                            <br/>
-                            <br/>
-                            {<button className={styles.button_background}>회원가입</button>}
-                        </form>
-                    </body>
-                </div>
-            </body>
-        </div>
-    );
+    const { location } = this.props;
+    console.log("YAAAAAAAAAAAAAa");
+    if (location.state.authenticated) {
+      return (
+          <div className={styles.content}>
+              <body>
+                  <div className={styles.main_content}>
+                      <body>
+                          <h2>회원가입</h2>
+                          <form>
+                              <p>
+                                  <label>인증번호</label>
+                              </p>
+                              <input className={styles.input_valid}
+                                  type="text" 
+                                  required
+                              />
+                              <label>
+                                  &nbsp;{minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+                              </label>
+                              <br/>
+                              <br/>
+                              <br/>
+                              {<button className={styles.button_background}>회원가입</button>}
+                          </form>
+                      </body>
+                  </div>
+              </body>
+          </div>
+      );
+    }
+    else{
+      return( window.location.href ='./sign_in' );
+    }
+
 }
 export default Validation;

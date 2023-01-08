@@ -11,7 +11,7 @@ export const MenuItems = [
     },
     {
         title: 'Sign in',
-        url: 'sign_in',
+        url: 'board/BoardHome',
         cName: 'nav-links'
     },
     {
