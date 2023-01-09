@@ -56,7 +56,11 @@ class Sign_up extends Component {
       password: this.joinPw.value
     };
     axios
+<<<<<<< HEAD
+      .post('http://localhost:8080/student/signup', send_param)
+=======
       .post("http://localhost:8080/member/join", send_param)
+>>>>>>> main
       //정상 수행
       .then(returnData => {
         if (returnData.data.message) {

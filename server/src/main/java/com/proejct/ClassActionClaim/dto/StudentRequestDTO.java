@@ -19,16 +19,16 @@ public class StudentRequestDTO {
 
     @NotNull
     @Email
-    private String studentEmail;
+    private String email;
 
-    public StudentRequestDTO(String name, String password, String studentEmail) {
+    public StudentRequestDTO(String name, String password, String email) {
         this.name = name;
         this.password = password;
-        this.studentEmail = studentEmail;
+        this.email = email;
     }
 
 
-    public static StudentRequestDTO of(String name, String password, String studentEmail) {
-        return new StudentRequestDTO(name, password, studentEmail);
+    public static StudentRequestDTO of(String name, String password, String email) {
+        return new StudentRequestDTO(name, password, email);
     }
 }
