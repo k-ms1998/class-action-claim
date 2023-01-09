@@ -36,7 +36,7 @@ class NotesServiceTest {
     @Test
     void givenNoteRequest_whenExecutingSaveNote_thenSuccess() {
         // Given
-        Student student = new Student("userA", "passwordA", "test@sju.ac.kr");
+        Student student = Student.of("userA", "passwordA", "test@sju.ac.kr");
         Student savedStudent = studentRepository.save(student);
 
         Lecture lecture = new Lecture("001", "LecA", "ProfA");
@@ -70,7 +70,7 @@ class NotesServiceTest {
     @Test
     void givenNoteRequest_whenExecutingGetNotes_thenSuccess() {
         // Given
-        Student student = new Student("userA", "passwordA", "test@sju.ac.kr");
+        Student student = Student.of("userA", "passwordA", "test@sju.ac.kr");
         Student savedStudent = studentRepository.save(student);
 
         Lecture lecture = new Lecture("001", "LecA", "ProfA");
@@ -104,7 +104,7 @@ class NotesServiceTest {
     @Test
     void givenNoteRequest_whenExecutingUpdateNote_thenSuccess() {
         // Given
-        Student student = new Student("userA", "passwordA", "test@sju.ac.kr");
+        Student student = Student.of("userA", "passwordA", "test@sju.ac.kr");
         Student savedStudent = studentRepository.save(student);
 
         Lecture lecture = new Lecture("001", "LecA", "ProfA");
@@ -148,7 +148,7 @@ class NotesServiceTest {
     @Test
     void givenNoteRequest_whenExecutingDeleteNote_thenSuccess() {
         // Given
-        Student student = new Student("userA", "passwordA", "test@sju.ac.kr");
+        Student student = Student.of("userA", "passwordA", "test@sju.ac.kr");
         Student savedStudent = studentRepository.save(student);
 
         Lecture lecture = new Lecture("001", "LecA", "ProfA");
