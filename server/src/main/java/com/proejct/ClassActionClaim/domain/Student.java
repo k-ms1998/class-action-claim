@@ -54,4 +54,8 @@ public class Student {
     public static Student of(String uuid, String username,String password, String email, boolean authenticated) {
         return new Student(null, uuid, username, password, "ROLE_STUDENT", email, authenticated);
     }
+
+    public void updateAuthenticated(boolean authenticated) {
+        this.authenticated = authenticated;
+    }
 }

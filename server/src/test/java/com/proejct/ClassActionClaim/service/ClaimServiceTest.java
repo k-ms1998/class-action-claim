@@ -37,7 +37,7 @@ class ClaimServiceTest {
         // Given
         Lecture lecture = lectureRepository.save(new Lecture("001", "Lecture A", "Kim"));
 
-        Student student = studentRepository.save(new Student("StudentA", "passwordA", "test@sju.ac.kr"));
+        Student student = studentRepository.save(Student.of("StudentA", "passwordA", "test@sju.ac.kr"));
 
         Claim claim = new Claim("Claim Midterm", "Content Midterm", ClaimType.MIDTERM, lecture, student);
 
@@ -77,7 +77,7 @@ class ClaimServiceTest {
         Lecture lectureA = lectureRepository.save(new Lecture("001", "Lecture A", "Kim"));
         Lecture lectureB = lectureRepository.save(new Lecture("002", "Lecture B", "Lee"));
 
-        Student student = studentRepository.save(new Student("StudentA", "passwordA", "test@sju.ac.kr"));
+        Student student = studentRepository.save(Student.of("StudentA", "passwordA", "test@sju.ac.kr"));
 
         Claim claimAA = claimRepository.save(new Claim("Claim AA", "Content AA", ClaimType.MIDTERM, lectureA, student));
         Claim claimAB = claimRepository.save(new Claim("Claim AB", "Content AB", ClaimType.MIDTERM, lectureA, student));
