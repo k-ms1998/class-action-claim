@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+<<<<<<< HEAD
 import { HashRouter } from 'react-router-dom';
 import Header from "./Header";
 import Body from "./Body";
@@ -20,3 +21,20 @@ class BoardHome extends Component {
 }
 
 export default BoardHome;
+=======
+import Header from "./Header";
+import Body from "./Body";
+import Footer from "./Footer";
+
+const BoardHome = () => {
+  return(
+    <div>
+      <Header/>
+      <Body/>
+      <Footer/>
+    </div>
+  );
+}
+
+export default BoardHome
+>>>>>>> main
