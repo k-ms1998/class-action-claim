@@ -1,5 +1,7 @@
 package com.proejct.ClassActionClaim.controller;
 
+import com.proejct.ClassActionClaim.dto.RequestBody.StudentLoginRequest;
+import com.proejct.ClassActionClaim.dto.ResponseBody.StudentLoginResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.UserResponse;
 import com.proejct.ClassActionClaim.dto.StudentRequestDTO;
 import com.proejct.ClassActionClaim.service.StudentService;
@@ -26,5 +28,10 @@ public class StudentController {
         log.info("[POST] /student/signup : " + studentRequestDTO);
 
         return studentService.addStudent(studentRequestDTO);
+    }
+
+    @PostMapping("/login")
+    public StudentLoginResponse studentLogin(@RequestBody StudentLoginRequest studentLoginRequest) {
+        return studentService.login(studentLoginRequest);
     }
 }
