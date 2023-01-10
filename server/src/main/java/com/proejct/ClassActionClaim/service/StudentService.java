@@ -1,6 +1,8 @@
 package com.proejct.ClassActionClaim.service;
 
 import com.proejct.ClassActionClaim.domain.Student;
+import com.proejct.ClassActionClaim.dto.RequestBody.StudentLoginRequest;
+import com.proejct.ClassActionClaim.dto.ResponseBody.StudentLoginResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.UserResponse;
 import com.proejct.ClassActionClaim.dto.StudentRequestDTO;
 import com.proejct.ClassActionClaim.repository.StudentRepository;
@@ -48,5 +50,24 @@ public class StudentService {
         emailAuthService.sendVerificationLink(email, uuid);
 
         return new UserResponse("Verification Link Sent.");
+    }
+
+    public StudentLoginResponse login(StudentLoginRequest studentLoginRequest) {
+        String email = studentLoginRequest.getEmail();
+        String password = studentLoginRequest.getPassword();
+
+        Student byEmail = studentRepository.findByEmail(email);
+        if (byEmail == null) {
+            log.info("[StudentService] Student Doesn't Exist.");
+        }
+        if(!byEmail.isAuthenticated()){
+            log.info("[StudentService] Student Unverified.");
+        }
+        if (!password.equals(byEmail.getPassword())) {
+            log.info("[StudentService] Incorrect Password.");
+        }
+
+        log.info("[StudentService] Student Login Success.");
+        return StudentLoginResponse.of(byEmail.getUuid(), byEmail.getEmail(), "Login Success");
     }
 }
