@@ -40,12 +40,12 @@ class Sign_in extends Component {
       password: this.loginPw.value
     };
     axios
-      .post("http://localhost:8080/member/login", send_param)
+      .post("http://localhost:8080/student/login", send_param)
       //정상 수행
       .then(returnData => {
         if (returnData.data.message) {
           // console.log("login_id:" + returnData.data._id);
-          $.cookie("login_id", returnData.data._id, { expires: 1 });
+          $.cookie("login_id", returnData.data.id, { expires: 1 });
           $.cookie("login_email", returnData.data.email, { expires: 1 });
           alert(returnData.data.message);
           window.location.reload();

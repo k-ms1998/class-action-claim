@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import $ from "jquery";
 import {} from "jquery.cookie";
+
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
@@ -55,12 +56,12 @@ class Header extends Component {
                 회원정보 수정
               </Button>
             </NavLink> */}
-            <NavLink to="/">
+            <NavLink exact to="/">
               <Button style={buttonStyle} variant="primary">
                 글목록
               </Button>
             </NavLink>
-            <NavLink to="/boardWrite">
+            <NavLink to= "/BoardWriteForm">
               <Button style={buttonStyle} variant="primary">
                 글쓰기
               </Button>
@@ -72,7 +73,6 @@ class Header extends Component {
             </NavLink>
           </Navbar.Collapse>
         </Navbar>
-        <Image src="./img/main.png" fluid />
       </div>
     );
   }

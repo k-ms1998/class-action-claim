@@ -43,7 +43,7 @@ class StudentControllerTest {
         Map<String, String> data = new HashMap<>();
         data.put("username", "testStudent");
         data.put("password", "123");
-        data.put("studentEmail", "test@sejong.com");
+        data.put("email", "test@sejong.com");
 
         // When & Then
         mvc.perform(post("/student/signup")

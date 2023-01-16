@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import Sign_in from "./Sign_in";
-import BoardForm from "./BoardForm";
-import BoardWriteForm from "./BoardWriteForm";
-import BoardDetail from "./BoardDetail";
-import MypageForm from "./MypageForm";
+import BoardForm from "../BoardForm";
 import { Route, Routes } from "react-router-dom";
 import $ from "jquery";
 import {} from "jquery.cookie";
+import BoardWriteForm from "../BoardWriteForm";
+import BoardDetail from "../BoardDetail";
+import MypageForm from "./MypageForm";
 
 class Body extends Component {
   render() {
@@ -26,8 +26,8 @@ class Body extends Component {
         <Routes>
           {resultForm}
           <Route path="/mypage" element={<MypageForm/>}/>
-          <Route path="/boardWrite" element={<BoardWriteForm/>}/>
-          <Route path="/board/detail" element={<BoardDetail/>}/>
+          <Route path="/BoardWriteForm" element={<BoardWriteForm/>}/>
+          <Route path="/BoardDetail" element={<BoardDetail/>}/>
         </Routes>
     );
   }

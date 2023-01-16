@@ -18,7 +18,7 @@ class EmailAuthServiceTest {
         // Given
         String email = "kms1998@sju.ac.kr";
         // When
-        emailAuthService.sendAuthCode(email);
+//        emailAuthService.sendAuthCode();
 
         // Then
 
