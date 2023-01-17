@@ -59,12 +59,15 @@ public class StudentService {
         Student byEmail = studentRepository.findByEmail(email);
         if (byEmail == null) {
             log.info("[StudentService] Student Doesn't Exist.");
+            return StudentLoginResponse.of(null, null, "Login Failed. Email Doesn't Exist.");
         }
         if(!byEmail.isAuthenticated()){
             log.info("[StudentService] Student Unverified.");
+            return StudentLoginResponse.of(byEmail.getUuid(), byEmail.getEmail(), "Login Failed. Student Unverified.");
         }
         if (!password.equals(byEmail.getPassword())) {
             log.info("[StudentService] Incorrect Password.");
+            return StudentLoginResponse.of(byEmail.getUuid(), byEmail.getEmail(), "Login Failed. Incorrect Password.");
         }
 
         log.info("[StudentService] Student Login Success.");

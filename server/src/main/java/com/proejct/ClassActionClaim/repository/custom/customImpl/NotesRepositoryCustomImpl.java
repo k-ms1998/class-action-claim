@@ -25,18 +25,17 @@ public class NotesRepositoryCustomImpl implements NotesRepositoryCustom {
      * 'select *from notes n where n.week = :week and n.lecture = :lecture and n.student = :student'
      */
     @Override
-
-    public List<Notes> findNotesByWeek(Integer week, Long lectureId, Long studentId) {
+    public List<Notes> findNotesByWeek(Long week, Long lectureId, String studentId) {
         QNotes notes = QNotes.notes;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
         Lecture lecture = lectureRepository.findById(lectureId).get();
-        Student student = studentRepository.findById(studentId).get();
+        Student student = studentRepository.findByUuid(studentId);
 
         return queryFactory
                 .select(notes)
                 .from(notes)
-                .where(notes.week.eq(week))
+                .where(notes.week.eq(Long.valueOf(week)))
                 .where(notes.lecture.eq(lecture), notes.student.eq(student))
                 .fetch();
     }

@@ -2,9 +2,8 @@ package com.proejct.ClassActionClaim.service;
 
 import com.proejct.ClassActionClaim.domain.Lecture;
 import com.proejct.ClassActionClaim.domain.Notes;
-import com.proejct.ClassActionClaim.domain.QNotes;
 import com.proejct.ClassActionClaim.domain.Student;
-import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequestDTO;
+import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.NotesResponseDTO;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.repository.LectureRepository;
@@ -25,9 +24,9 @@ public class NotesService {
     private final LectureRepository lectureRepository;
     private final NotesRepository notesRepository;
 
-    public ToClientResponse<List<NotesResponseDTO>> getNotesByWeek(Integer week, NotesRequestDTO requestDTO) {
-        Long lectureId = requestDTO.getLectureId();
-        Long studentId = requestDTO.getStudentId();
+    public ToClientResponse<List<NotesResponseDTO>> getNotesByWeek(Long week, NotesRequest request) {
+        Long lectureId = request.getLectureId();
+        String studentId = request.getStudentId();
 
         List<Notes> notesByWeek = notesRepository.findNotesByWeek(week, lectureId, studentId);
         List<NotesResponseDTO> notesResponseDTOS
@@ -42,13 +41,13 @@ public class NotesService {
         return new ToClientResponse<List<NotesResponseDTO>>("Fetched Notes", notesResponseDTOS.size(), notesResponseDTOS);
     }
 
-    public NotesResponseDTO saveNote(NotesRequestDTO requestDTO) {
-        Integer week = requestDTO.getWeek();
-        String title = requestDTO.getTitle();
-        String content = requestDTO.getContent();
+    public NotesResponseDTO saveNote(NotesRequest request) {
+        Long week = request.getWeek();
+        String title = request.getTitle();
+        String content = request.getContent();
 
-        Lecture lecture = getLecture(requestDTO.getLectureId());
-        Student student = getStudent(requestDTO.getStudentId());
+        Lecture lecture = getLecture(request.getLectureId());
+        Student student = getStudent(request.getStudentId());
 
         Notes notes = new Notes(title, content, week, lecture, student);
 
@@ -58,7 +57,7 @@ public class NotesService {
         return notesResponseDTO;
     }
 
-    public ToClientResponse<NotesResponseDTO> updateNote(Long noteId, NotesRequestDTO requestDTO) {
+    public ToClientResponse<NotesResponseDTO> updateNote(Long noteId, NotesRequest requestDTO) {
         Optional<Notes> noteOptional = notesRepository.findById(noteId);
         // Check if note exists
         if (noteOptional == null) {
@@ -67,7 +66,7 @@ public class NotesService {
 
         // Check if the studentId, lectureId and week are a match
         Notes note = noteOptional.get();
-        if (note.getStudent().getId() != requestDTO.getStudentId()
+        if (note.getStudent().getUuid() != requestDTO.getStudentId()
                 || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
             return new ToClientResponse<NotesResponseDTO>("Error: Owner and/or lecture doesn't match.", 0, null);
         }
@@ -85,14 +84,14 @@ public class NotesService {
         return new ToClientResponse<NotesResponseDTO>("Note Updated.", 1, updatedNoteDto);
     }
 
-    public ToClientResponse<NotesResponseDTO> removeNote(Long noteId, NotesRequestDTO requestDTO) {
+    public ToClientResponse<NotesResponseDTO> removeNote(Long noteId, NotesRequest requestDTO) {
         Optional<Notes> noteOptional = notesRepository.findById(noteId);
         if (noteOptional == null) {
             return new ToClientResponse<NotesResponseDTO>("Error: Couldn't find note.", 0, null);
         }
 
         Notes note = noteOptional.get();
-        if (note.getStudent().getId() != requestDTO.getStudentId()
+        if (note.getStudent().getUuid() != requestDTO.getStudentId()
                 || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
             return new ToClientResponse<NotesResponseDTO>("Error: Owner and/or lecture doesn't match.", 0, null);
         }
@@ -107,8 +106,8 @@ public class NotesService {
         return lectureRepository.findById(id).get();
     }
 
-    protected Student getStudent(Long id) {
-        return studentRepository.findById(id).get();
+    protected Student getStudent(String uuid) {
+        return studentRepository.findByUuid(uuid);
     }
 
 }

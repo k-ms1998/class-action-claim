@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface NotesRepositoryCustom {
 
-    List<Notes> findNotesByWeek(Integer week, Long lectureId, Long studentId);
+    List<Notes> findNotesByWeek(Long week, Long lectureId, String studentId);
 }

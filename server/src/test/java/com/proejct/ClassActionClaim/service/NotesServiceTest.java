@@ -3,7 +3,7 @@ package com.proejct.ClassActionClaim.service;
 import com.proejct.ClassActionClaim.domain.Lecture;
 import com.proejct.ClassActionClaim.domain.Notes;
 import com.proejct.ClassActionClaim.domain.Student;
-import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequestDTO;
+import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.NotesResponseDTO;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.repository.LectureRepository;
@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class NotesServiceTest {
@@ -45,14 +43,14 @@ class NotesServiceTest {
 
         String title = "Title #1";
         String content = "Content #1";
-        Integer week = 1;
-        Long studentId = savedStudent.getId();
+        Long week = 1L;
+        String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        NotesRequestDTO notesRequestDTO = new NotesRequestDTO(title, content, week, studentId, lectureId);
+        NotesRequest notesRequest = new NotesRequest(title, content, week, lectureId, studentId);
 
         // When
-        NotesResponseDTO responseDTO = notesService.saveNote(notesRequestDTO);
+        NotesResponseDTO responseDTO = notesService.saveNote(notesRequest);
 
         // Then
         /**
@@ -78,18 +76,18 @@ class NotesServiceTest {
 
         String title = "Title #1";
         String content = "Content #1";
-        Integer week = 1;
-        Long studentId = savedStudent.getId();
+        Long week = 1L;
+        String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        NotesRequestDTO notesRequestDTOA = new NotesRequestDTO(title, content, week, studentId, lectureId);
-        NotesRequestDTO notesRequestDTOB = new NotesRequestDTO(title, content, week, studentId, lectureId);
+        NotesRequest notesRequestDTOA = NotesRequest.of(title, content, week, lectureId, studentId);
+        NotesRequest notesRequestDTOB = NotesRequest.of(title, content, week, lectureId, studentId);
 
         notesService.saveNote(notesRequestDTOA);
         notesService.saveNote(notesRequestDTOB);
 
         // When
-        ToClientResponse<List<NotesResponseDTO>> result = notesService.getNotesByWeek(1, new NotesRequestDTO(savedLecture.getId(), savedStudent.getId()));
+        ToClientResponse<List<NotesResponseDTO>> result = notesService.getNotesByWeek(1L, NotesRequest.of(savedLecture.getId(), savedStudent.getUuid()));
 
         // Then
         String message = result.getMessage();
@@ -113,8 +111,8 @@ class NotesServiceTest {
 
         String title = "Title #1";
         String content = "Content #1";
-        Integer week = 1;
-        Long studentId = savedStudent.getId();
+        Long week = 1L;
+        String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
         Notes note = new Notes(title, content, week , savedLecture, savedStudent);
@@ -122,10 +120,10 @@ class NotesServiceTest {
 
         String updatedTitle = "Title #2";
         String updatedContent = "Content #2";
-        NotesRequestDTO updateNotesRequestDTO = new NotesRequestDTO(updatedTitle, updatedContent, week, studentId, lectureId);
+        NotesRequest updateNotesRequest = new NotesRequest(updatedTitle, updatedContent, week, lectureId, studentId);
 
         // When
-        ToClientResponse<NotesResponseDTO> notesResponseDTOToClientResponse = notesService.updateNote(savedNote.getId(), updateNotesRequestDTO);
+        ToClientResponse<NotesResponseDTO> notesResponseDTOToClientResponse = notesService.updateNote(savedNote.getId(), updateNotesRequest);
 
         // Then
         String message = notesResponseDTOToClientResponse.getMessage();
@@ -156,17 +154,17 @@ class NotesServiceTest {
 
         String title = "Title #1";
         String content = "Content #1";
-        Integer week = 1;
-        Long studentId = savedStudent.getId();
+        Long week = 1L;
+        String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
         Notes note = new Notes(title, content, week , savedLecture, savedStudent);
         Notes savedNote = notesRepository.save(note);
 
-        NotesRequestDTO notesRequestDTO = new NotesRequestDTO(title, content, week, lectureId, studentId);
+        NotesRequest notesRequest = new NotesRequest(title, content, week, lectureId, studentId);
 
         // When
-        ToClientResponse<NotesResponseDTO> notesResponseDTOToClientResponse = notesService.removeNote(savedNote.getId(), notesRequestDTO);
+        ToClientResponse<NotesResponseDTO> notesResponseDTOToClientResponse = notesService.removeNote(savedNote.getId(), notesRequest);
 
         // Then
         String message = notesResponseDTOToClientResponse.getMessage();

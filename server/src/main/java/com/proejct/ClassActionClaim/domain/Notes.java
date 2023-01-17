@@ -17,7 +17,7 @@ public class Notes extends IdDateTimeEntity {
 
     String title;
     String content;
-    Integer week;
+    Long week;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -27,7 +27,7 @@ public class Notes extends IdDateTimeEntity {
     @JoinColumn
     Student student;
 
-    public Notes(String title, String content, Integer week, Lecture lecture, Student student) {
+    public Notes(String title, String content, Long week, Lecture lecture, Student student) {
 
         this.title = title;
         this.content = content;

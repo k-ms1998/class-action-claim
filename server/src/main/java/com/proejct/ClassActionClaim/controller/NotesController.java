@@ -1,7 +1,6 @@
 package com.proejct.ClassActionClaim.controller;
 
-import com.proejct.ClassActionClaim.domain.Notes;
-import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequestDTO;
+import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.NotesResponseDTO;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.service.NotesService;
@@ -18,22 +17,22 @@ public class NotesController {
     private final NotesService notesService;
 
     @GetMapping("/{week}")
-    public ToClientResponse<List<NotesResponseDTO>> getNotes(@PathVariable Integer week, @ModelAttribute NotesRequestDTO requestDTO) {
-        return notesService.getNotesByWeek(week, requestDTO);
+    public ToClientResponse<List<NotesResponseDTO>> getNotes(@PathVariable Long week, @ModelAttribute NotesRequest request) {
+        return notesService.getNotesByWeek(week, request);
     }
 
     @PostMapping("/save")
-    public NotesResponseDTO saveNotes(@RequestBody NotesRequestDTO requestDTO) {
-        return notesService.saveNote(requestDTO);
+    public NotesResponseDTO saveNotes(@RequestBody NotesRequest request) {
+        return notesService.saveNote(request);
     }
 
     @PostMapping("/update")
-    public ToClientResponse<NotesResponseDTO> updateNotes(@ModelAttribute Long noteId, @RequestBody NotesRequestDTO requestDTO) {
-        return notesService.updateNote(noteId, requestDTO);
+    public ToClientResponse<NotesResponseDTO> updateNotes(@ModelAttribute Long noteId, @RequestBody NotesRequest request) {
+        return notesService.updateNote(noteId, request);
     }
 
     @PostMapping("/remove")
-    public ToClientResponse<NotesResponseDTO> removeNotes(@ModelAttribute Long noteId, @RequestBody NotesRequestDTO requestDTO) {
-        return notesService.removeNote(noteId, requestDTO);
+    public ToClientResponse<NotesResponseDTO> removeNotes(@ModelAttribute Long noteId, @RequestBody NotesRequest request) {
+        return notesService.removeNote(noteId, request);
     }
 }
