@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table, Button } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
@@ -11,10 +11,12 @@ class BoardDetail extends Component {
   };
 
   componentDidMount() {
-    if (this.props.location !== undefined) {
+    console.log(this.props);
+    if (this.props !== undefined) {
       this.getDetail();
     } else {
       window.location.href = "/";
+      //console.log(this.props);
     }
   }
 
@@ -42,7 +44,7 @@ class BoardDetail extends Component {
   getDetail = () => {
     const send_param = {
       headers,
-      _id: this.props.location._id
+      _id: this.props._id
     };
     const marginBottom = {
       marginBottom: 5
@@ -77,7 +79,7 @@ class BoardDetail extends Component {
                     query: {
                       title: returnData.data.board[0].title,
                       content: returnData.data.board[0].content,
-                      _id: this.props.location._id
+                      _id: this.props._id
                     }
                   }}
                 >
@@ -89,7 +91,7 @@ class BoardDetail extends Component {
                   block
                   onClick={this.deleteBoard.bind(
                     null,
-                    this.props.location._id
+                    this.props._id
                   )}
                 >
                   글 삭제

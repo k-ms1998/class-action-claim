@@ -1,42 +1,26 @@
 import React, { Component } from "react";
 import { Table } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { Route, Routes, NavLink, Link } from "react-router-dom";
 import axios from "axios";
 import $ from "jquery";
 import {} from "jquery.cookie";
+import BoardDetail from "./BoardDetail";
+import Home from "./Home"
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
-class BoardRow extends Component {
-  render() {
-    return (
-      <tr>
-        <td>
-          <NavLink
-            to={{ pathname: "/BoardDetail", query: { _id: this.props._id } }}
-          >
-            {this.props.createdAt.substring(0, 10)}
-          </NavLink>
-        </td>
-        <td>
-          <NavLink
-            to={{ pathname: "/BoardDetail", query: { _id: this.props._id } }}
-          >
-            {this.props.title}
-          </NavLink>
-        </td>
-      </tr>
-    );
-  }
-}
-
-class BoardForm extends Component {
+class BoardResult extends Component{
   state = {
-    boardList: []
+    boardList: [],
+    onClickedId: ""
   };
 
   componentDidMount() {
     this.getBoardList();
+  }
+
+  onClickListener=(props)=>{
+    console.log(props)
   }
 
   getBoardList = () => {
@@ -47,23 +31,37 @@ class BoardForm extends Component {
     axios
       .post("http://localhost:8080/board/getBoardList", send_param)
       .then(returnData => {
+
         let boardList;
         if (returnData.data.list.length > 0) {
-          // console.log(returnData.data.list.length);
           const boards = returnData.data.list;
           boardList = boards.map(item => (
-            <BoardRow
-              key={Date.now() + Math.random() * 500}
-              _id={item._id}
-              createdAt={item.createdAt}
-              title={item.title}
-            ></BoardRow>
+          <tr
+          onClick={this.onClickListener(item._id)}
+          key={Date.now() + Math.random() * 500}
+          _id={item._id}
+          createdAt={item.createdAt}
+          title={item.title}>
+            <td>
+              <NavLink to= "/BoardHome/BoardDetail">
+                {item.createdAt.substring(0, 10)}
+              </NavLink>
+            </td>
+            <td>
+              <NavLink to="/BoardHome/BoardDetail">
+                {item.title}
+              </NavLink>
+            </td>
+            <Routes>
+              <Route exact path="/BoardDetail" element={<BoardDetail _id={item._id}/>}/>
+            </Routes>
+            </tr>
           ));
-          // console.log(boardList);
           this.setState({
             boardList: boardList
           });
-        } else {
+        } 
+        else {
           boardList = (
             <tr>
               <td colSpan="2">작성한 게시글이 존재하지 않습니다.</td>
@@ -72,7 +70,6 @@ class BoardForm extends Component {
           this.setState({
             boardList: boardList
           });
-          // window.location.reload();
         }
       })
       .catch(err => {
@@ -80,6 +77,26 @@ class BoardForm extends Component {
       });
   };
 
+  render(){
+
+    return(
+      <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>날짜</th>
+          <th>글 제목</th>
+        </tr>
+      </thead>
+      <tbody>
+        {this.state.boardList}
+      </tbody>
+      </Table>
+    );
+  }
+}
+
+class BoardForm extends Component {
+  
   render() {
     const divStyle = {
       margin: 50
@@ -88,15 +105,7 @@ class BoardForm extends Component {
     return (
       <div>
         <div style={divStyle}>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>날짜</th>
-                <th>글 제목</th>
-              </tr>
-            </thead>
-            <tbody>{this.state.boardList}</tbody>
-          </Table>
+          <BoardResult/>
         </div>
       </div>
     );
