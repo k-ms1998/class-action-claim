@@ -54,7 +54,7 @@ class BoardWriteForm extends Component {
       url = "http://localhost:8080/board/write";
       send_param = {
         headers,
-        "_id": $.cookie("login_id"),
+        "studentId": $.cookie("login_id"),
         "title": boardTitle,
         "content": boardContent
       };
