@@ -2,6 +2,7 @@ package com.proejct.ClassActionClaim.domain;
 
 import com.proejct.ClassActionClaim.domain.baseEntities.IdDateTimeEntity;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Board extends IdDateTimeEntity {
 
     String title;
@@ -21,19 +23,14 @@ public class Board extends IdDateTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    Lecture lecture;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
     Student student;
 
-    public Board(String title, String content, Long week, Lecture lecture, Student student) {
+    public static Board of(String title, String content, Long week, Student student) {
+        return Board.of(title, content, week, new Lecture(), student);
+    }
 
-        this.title = title;
-        this.content = content;
-        this.week = week;
-        this.lecture = lecture;
-        this.student = student;
+    public static Board of(String title, String content, Long week, Lecture lecture, Student student) {
+        return new Board(title, content, week, student);
     }
 
     public void updateTitle(String title) {

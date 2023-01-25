@@ -1,5 +1,6 @@
 package com.proejct.ClassActionClaim.controller;
 
+import com.proejct.ClassActionClaim.dto.RequestBody.Board.BoardWriteRequest;
 import com.proejct.ClassActionClaim.dto.RequestBody.BoardRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.BoardResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
@@ -21,9 +22,10 @@ public class BoardController {
         return boardService.getNotesByWeek(week, request);
     }
 
-    @PostMapping("/save")
-    public BoardResponse saveNotes(@RequestBody BoardRequest request) {
-        return boardService.saveNote(request);
+    @PostMapping("/write")
+    public BoardResponse writeBoard(@RequestBody BoardWriteRequest request) {
+
+        return boardService.writeBoard(request);
     }
 
     @PostMapping("/update")

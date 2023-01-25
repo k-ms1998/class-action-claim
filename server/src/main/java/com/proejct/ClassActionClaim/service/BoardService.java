@@ -3,6 +3,7 @@ package com.proejct.ClassActionClaim.service;
 import com.proejct.ClassActionClaim.domain.Board;
 import com.proejct.ClassActionClaim.domain.Lecture;
 import com.proejct.ClassActionClaim.domain.Student;
+import com.proejct.ClassActionClaim.dto.RequestBody.Board.BoardWriteRequest;
 import com.proejct.ClassActionClaim.dto.RequestBody.BoardRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.BoardResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
@@ -41,20 +42,26 @@ public class BoardService {
         return new ToClientResponse<List<BoardResponse>>("Fetched Notes", boardResponses.size(), boardResponses);
     }
 
-    public BoardResponse saveNote(BoardRequest request) {
-        Long week = request.getWeek();
+    /*
+    TODO #1. Student가 존재하지 않거나 인증되지 않은 Student일 경우 제대로된 에외 처리
+     */
+    public BoardResponse writeBoard(BoardWriteRequest request) {
+        String studentId = request.getStudentId();
         String title = request.getTitle();
         String content = request.getContent();
 
-        Lecture lecture = getLecture(request.getLectureId());
-        Student student = getStudent(request.getStudentId());
+        Student student = studentRepository.findByUuid(studentId);
+        if (student == null) {
+            throw new RuntimeException();
+        }
+        if(isStudentNotAuthenticated(student)){
+            throw new RuntimeException();
+        }
 
-        Board board = new Board(title, content, week, lecture, student);
+        Board board = BoardWriteRequest.toEntity(request, student);
+        boardRepository.save(board);
 
-        Board savedNote = boardRepository.save(board);
-        BoardResponse boardResponse = new BoardResponse(savedNote.getTitle(), savedNote.getContent());
-
-        return boardResponse;
+        return BoardResponse.of(title, content);
     }
 
     public ToClientResponse<BoardResponse> updateNote(Long noteId, BoardRequest requestDTO) {
@@ -66,10 +73,10 @@ public class BoardService {
 
         // Check if the studentId, lectureId and week are a match
         Board note = noteOptional.get();
-        if (note.getStudent().getUuid() != requestDTO.getStudentId()
-                || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
-            return new ToClientResponse<BoardResponse>("Error: Owner and/or lecture doesn't match.", 0, null);
-        }
+//        if (note.getStudent().getUuid() != requestDTO.getStudentId()
+//                || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
+//            return new ToClientResponse<BoardResponse>("Error: Owner and/or lecture doesn't match.", 0, null);
+//        }
 
         // Update Note
         String updatedTitle = requestDTO.getTitle();
@@ -91,10 +98,10 @@ public class BoardService {
         }
 
         Board note = noteOptional.get();
-        if (note.getStudent().getUuid() != requestDTO.getStudentId()
-                || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
-            return new ToClientResponse<BoardResponse>("Error: Owner and/or lecture doesn't match.", 0, null);
-        }
+//        if (note.getStudent().getUuid() != requestDTO.getStudentId()
+//                || note.getLecture().getId() != requestDTO.getLectureId() || note.getWeek() != requestDTO.getWeek()) {
+//            return new ToClientResponse<BoardResponse>("Error: Owner and/or lecture doesn't match.", 0, null);
+//        }
 
         boardRepository.delete(note);
         BoardResponse deletedNote = new BoardResponse(note.getTitle(), note.getContent());
@@ -110,4 +117,7 @@ public class BoardService {
         return studentRepository.findByUuid(uuid);
     }
 
+    private boolean isStudentNotAuthenticated(Student student) {
+        return !(student.isAuthenticated());
+    }
 }

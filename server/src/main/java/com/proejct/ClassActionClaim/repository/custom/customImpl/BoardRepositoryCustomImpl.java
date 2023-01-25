@@ -36,7 +36,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
                 .select(board)
                 .from(board)
                 .where(board.week.eq(Long.valueOf(week)))
-                .where(board.lecture.eq(lecture), board.student.eq(student))
+                .where(board.student.eq(student))
                 .fetch();
     }
 }
