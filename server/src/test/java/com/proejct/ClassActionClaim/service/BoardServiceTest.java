@@ -1,20 +1,32 @@
 package com.proejct.ClassActionClaim.service;
 
+import com.proejct.ClassActionClaim.config.BaseConfig;
 import com.proejct.ClassActionClaim.domain.Lecture;
 import com.proejct.ClassActionClaim.domain.Board;
 import com.proejct.ClassActionClaim.domain.Student;
+import com.proejct.ClassActionClaim.dto.RequestBody.Board.BoardWriteRequest;
 import com.proejct.ClassActionClaim.dto.RequestBody.BoardRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.BoardResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.repository.LectureRepository;
 import com.proejct.ClassActionClaim.repository.BoardRepository;
 import com.proejct.ClassActionClaim.repository.StudentRepository;
+import com.proejct.ClassActionClaim.service.server.EmailAuthService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @SpringBootTest
 class BoardServiceTest {
@@ -22,47 +34,33 @@ class BoardServiceTest {
     @Autowired
     private BoardService boardService;
 
-    @Autowired
+    @MockBean
     private BoardRepository boardRepository;
 
-    @Autowired
+    @MockBean
     private StudentRepository studentRepository;
 
-    @Autowired
+    @MockBean
     private LectureRepository lectureRepository;
 
     @Test
-    void givenNoteRequest_whenExecutingSaveNote_thenSuccess() {
+    void givenBoardWriteRequest_whenExecutingWriteNote_thenSuccess() {
         // Given
-        Student student = Student.of("userA", "passwordA", "test@sju.ac.kr");
-        Student savedStudent = studentRepository.save(student);
-
-        Lecture lecture = new Lecture("001", "LecA", "ProfA");
-        Lecture savedLecture = lectureRepository.save(lecture);
-
-
+        String studentId = "uuid#1";
         String title = "Title #1";
         String content = "Content #1";
-        Long week = 1L;
-        String studentId = savedStudent.getUuid();
-        Long lectureId = savedLecture.getId();
+        Student student = createStudent(studentId);
+        given(studentRepository.findByUuid(studentId)).willReturn(student);
 
-        BoardRequest boardRequest = new BoardRequest(title, content, week, lectureId, studentId);
+        BoardWriteRequest boardRequest = BoardWriteRequest.of(studentId, title, content);
 
         // When
-        BoardResponse responseDTO = boardService.saveNote(boardRequest);
+        BoardResponse result = boardService.writeBoard(boardRequest);
 
         // Then
-        /**
-         * 1. Saved Note must have the title 'Title #1'
-         * 2. Saved Note must have the content 'Content #1'
-         * 3. Count of tuples in Notes should be 1
-         */
-        Assertions.assertThat(responseDTO.getTitle()).isEqualTo("Title #1");
-        Assertions.assertThat(responseDTO.getContent()).isEqualTo("Content #1");
-
-        List<Board> allNotes = boardRepository.findAll();
-        Assertions.assertThat(allNotes).hasSize(1);
+        Assertions.assertThat(result.getTitle()).isEqualTo(title);
+        Assertions.assertThat(result.getContent()).isEqualTo(content);
+        then(studentRepository).should().findByUuid(studentId);
     }
 
     @Test
@@ -80,11 +78,11 @@ class BoardServiceTest {
         String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        BoardRequest boardRequestDTOA = BoardRequest.of(title, content, week, lectureId, studentId);
-        BoardRequest boardRequestDTOB = BoardRequest.of(title, content, week, lectureId, studentId);
+       BoardWriteRequest boardRequestDTOA = BoardWriteRequest.of(studentId, title, content);
+       BoardWriteRequest boardRequestDTOB = BoardWriteRequest.of(studentId, title, content);
 
-        boardService.saveNote(boardRequestDTOA);
-        boardService.saveNote(boardRequestDTOB);
+        boardService.writeBoard(boardRequestDTOA);
+        boardService.writeBoard(boardRequestDTOB);
 
         // When
         ToClientResponse<List<BoardResponse>> result = boardService.getNotesByWeek(1L, BoardRequest.of(savedLecture.getId(), savedStudent.getUuid()));
@@ -115,7 +113,7 @@ class BoardServiceTest {
         String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        Board note = new Board(title, content, week , savedLecture, savedStudent);
+        Board note = new Board(title, content, week, savedStudent);
         Board savedNote = boardRepository.save(note);
 
         String updatedTitle = "Title #2";
@@ -158,7 +156,7 @@ class BoardServiceTest {
         String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        Board note = new Board(title, content, week , savedLecture, savedStudent);
+        Board note = new Board(title, content, week, savedStudent);
         Board savedNote = boardRepository.save(note);
 
         BoardRequest boardRequest = new BoardRequest(title, content, week, lectureId, studentId);
@@ -183,4 +181,7 @@ class BoardServiceTest {
         Assertions.assertThat(allNotes).hasSize(0);
     }
 
+    private Student createStudent(String studentId) {
+        return Student.of(studentId, "kms", "password", "test@sju.com", true);
+    }
 }
