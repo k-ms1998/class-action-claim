@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotesResponseDTO {
+public class BoardResponse {
 
     String title;
     String content;
 
-    public NotesResponseDTO(String title, String content) {
+    public BoardResponse(String title, String content) {
         this.title = title;
         this.content = content;
     }

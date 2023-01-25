@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class NotesRequest {
+public class BoardRequest {
 
     String title;
     String content;
@@ -14,12 +14,12 @@ public class NotesRequest {
     Long lectureId;
     String studentId;
 
-    public static NotesRequest of(Long lectureId, String studentId) {
-        return NotesRequest.of(null, null, null, lectureId, studentId);
+    public static BoardRequest of(Long lectureId, String studentId) {
+        return BoardRequest.of(null, null, null, lectureId, studentId);
     }
 
-    public static NotesRequest of(String title, String content, Long week, Long lectureId, String studentId) {
-        return new NotesRequest(
+    public static BoardRequest of(String title, String content, Long week, Long lectureId, String studentId) {
+        return new BoardRequest(
                 title,
                 content,
                 week,

@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notes extends IdDateTimeEntity {
+public class Board extends IdDateTimeEntity {
 
     String title;
     String content;
@@ -27,7 +27,7 @@ public class Notes extends IdDateTimeEntity {
     @JoinColumn
     Student student;
 
-    public Notes(String title, String content, Long week, Lecture lecture, Student student) {
+    public Board(String title, String content, Long week, Lecture lecture, Student student) {
 
         this.title = title;
         this.content = content;
