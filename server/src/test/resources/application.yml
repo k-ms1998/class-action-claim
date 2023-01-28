@@ -1,0 +1,16 @@
+
+# Overloaded POST 사용
+spring:
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: test_id
+    password: test_pw
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+          starttls:
+            enable: true

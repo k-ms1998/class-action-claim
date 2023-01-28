@@ -1,68 +1,66 @@
 package com.proejct.ClassActionClaim.service;
 
+import com.proejct.ClassActionClaim.config.BaseConfig;
 import com.proejct.ClassActionClaim.domain.Lecture;
-import com.proejct.ClassActionClaim.domain.Notes;
+import com.proejct.ClassActionClaim.domain.Board;
 import com.proejct.ClassActionClaim.domain.Student;
-import com.proejct.ClassActionClaim.dto.RequestBody.NotesRequest;
-import com.proejct.ClassActionClaim.dto.ResponseBody.NotesResponseDTO;
+import com.proejct.ClassActionClaim.dto.RequestBody.Board.BoardWriteRequest;
+import com.proejct.ClassActionClaim.dto.RequestBody.BoardRequest;
+import com.proejct.ClassActionClaim.dto.ResponseBody.BoardResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.repository.LectureRepository;
-import com.proejct.ClassActionClaim.repository.NotesRepository;
+import com.proejct.ClassActionClaim.repository.BoardRepository;
 import com.proejct.ClassActionClaim.repository.StudentRepository;
+import com.proejct.ClassActionClaim.service.server.EmailAuthService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+
 @SpringBootTest
-class NotesServiceTest {
+class BoardServiceTest {
 
     @Autowired
-    private NotesService notesService;
+    private BoardService boardService;
 
-    @Autowired
-    private NotesRepository notesRepository;
+    @MockBean
+    private BoardRepository boardRepository;
 
-    @Autowired
+    @MockBean
     private StudentRepository studentRepository;
 
-    @Autowired
+    @MockBean
     private LectureRepository lectureRepository;
 
     @Test
-    void givenNoteRequest_whenExecutingSaveNote_thenSuccess() {
+    void givenBoardWriteRequest_whenExecutingWriteNote_thenSuccess() {
         // Given
-        Student student = Student.of("userA", "passwordA", "test@sju.ac.kr");
-        Student savedStudent = studentRepository.save(student);
-
-        Lecture lecture = new Lecture("001", "LecA", "ProfA");
-        Lecture savedLecture = lectureRepository.save(lecture);
-
-
+        String studentId = "uuid#1";
         String title = "Title #1";
         String content = "Content #1";
-        Long week = 1L;
-        String studentId = savedStudent.getUuid();
-        Long lectureId = savedLecture.getId();
+        Student student = createStudent(studentId);
+        given(studentRepository.findByUuid(studentId)).willReturn(student);
 
-        NotesRequest notesRequest = new NotesRequest(title, content, week, lectureId, studentId);
+        BoardWriteRequest boardRequest = BoardWriteRequest.of(studentId, title, content);
 
         // When
-        NotesResponseDTO responseDTO = notesService.saveNote(notesRequest);
+        BoardResponse result = boardService.writeBoard(boardRequest);
 
         // Then
-        /**
-         * 1. Saved Note must have the title 'Title #1'
-         * 2. Saved Note must have the content 'Content #1'
-         * 3. Count of tuples in Notes should be 1
-         */
-        Assertions.assertThat(responseDTO.getTitle()).isEqualTo("Title #1");
-        Assertions.assertThat(responseDTO.getContent()).isEqualTo("Content #1");
-
-        List<Notes> allNotes = notesRepository.findAll();
-        Assertions.assertThat(allNotes).hasSize(1);
+        Assertions.assertThat(result.getTitle()).isEqualTo(title);
+        Assertions.assertThat(result.getContent()).isEqualTo(content);
+        then(studentRepository).should().findByUuid(studentId);
     }
 
     @Test
@@ -80,19 +78,19 @@ class NotesServiceTest {
         String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        NotesRequest notesRequestDTOA = NotesRequest.of(title, content, week, lectureId, studentId);
-        NotesRequest notesRequestDTOB = NotesRequest.of(title, content, week, lectureId, studentId);
+       BoardWriteRequest boardRequestDTOA = BoardWriteRequest.of(studentId, title, content);
+       BoardWriteRequest boardRequestDTOB = BoardWriteRequest.of(studentId, title, content);
 
-        notesService.saveNote(notesRequestDTOA);
-        notesService.saveNote(notesRequestDTOB);
+        boardService.writeBoard(boardRequestDTOA);
+        boardService.writeBoard(boardRequestDTOB);
 
         // When
-        ToClientResponse<List<NotesResponseDTO>> result = notesService.getNotesByWeek(1L, NotesRequest.of(savedLecture.getId(), savedStudent.getUuid()));
+        ToClientResponse<List<BoardResponse>> result = boardService.getNotesByWeek(1L, BoardRequest.of(savedLecture.getId(), savedStudent.getUuid()));
 
         // Then
         String message = result.getMessage();
         Integer count = result.getCount();
-        List<NotesResponseDTO> data = result.getData();
+        List<BoardResponse> data = result.getData();
 
         Assertions.assertThat(message).isEqualTo("Fetched Notes");
         Assertions.assertThat(count).isEqualTo(2);
@@ -115,15 +113,15 @@ class NotesServiceTest {
         String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        Notes note = new Notes(title, content, week , savedLecture, savedStudent);
-        Notes savedNote = notesRepository.save(note);
+        Board note = new Board(title, content, week, savedStudent);
+        Board savedNote = boardRepository.save(note);
 
         String updatedTitle = "Title #2";
         String updatedContent = "Content #2";
-        NotesRequest updateNotesRequest = new NotesRequest(updatedTitle, updatedContent, week, lectureId, studentId);
+        BoardRequest updateBoardRequest = new BoardRequest(updatedTitle, updatedContent, week, lectureId, studentId);
 
         // When
-        ToClientResponse<NotesResponseDTO> notesResponseDTOToClientResponse = notesService.updateNote(savedNote.getId(), updateNotesRequest);
+        ToClientResponse<BoardResponse> notesResponseDTOToClientResponse = boardService.updateNote(savedNote.getId(), updateBoardRequest);
 
         // Then
         String message = notesResponseDTOToClientResponse.getMessage();
@@ -132,14 +130,14 @@ class NotesServiceTest {
         Integer count = notesResponseDTOToClientResponse.getCount();
         Assertions.assertThat(count).isEqualTo(1);
 
-        NotesResponseDTO data = notesResponseDTOToClientResponse.getData();
+        BoardResponse data = notesResponseDTOToClientResponse.getData();
         Assertions.assertThat(data.getTitle()).isEqualTo("Title #2");
         Assertions.assertThat(data.getContent()).isEqualTo("Content #2");
 
         /**
          * Notes 를 새로 추가한게 아니라 기존에 있던 것을 업데이트 한것이기 때문에 하나의 Notes 만 저장되어 있어야됨
          */
-        List<Notes> allNotes = notesRepository.findAll();
+        List<Board> allNotes = boardRepository.findAll();
         Assertions.assertThat(allNotes).hasSize(1);
     }
 
@@ -158,13 +156,13 @@ class NotesServiceTest {
         String studentId = savedStudent.getUuid();
         Long lectureId = savedLecture.getId();
 
-        Notes note = new Notes(title, content, week , savedLecture, savedStudent);
-        Notes savedNote = notesRepository.save(note);
+        Board note = new Board(title, content, week, savedStudent);
+        Board savedNote = boardRepository.save(note);
 
-        NotesRequest notesRequest = new NotesRequest(title, content, week, lectureId, studentId);
+        BoardRequest boardRequest = new BoardRequest(title, content, week, lectureId, studentId);
 
         // When
-        ToClientResponse<NotesResponseDTO> notesResponseDTOToClientResponse = notesService.removeNote(savedNote.getId(), notesRequest);
+        ToClientResponse<BoardResponse> notesResponseDTOToClientResponse = boardService.removeNote(savedNote.getId(), boardRequest);
 
         // Then
         String message = notesResponseDTOToClientResponse.getMessage();
@@ -173,14 +171,17 @@ class NotesServiceTest {
         Integer count = notesResponseDTOToClientResponse.getCount();
         Assertions.assertThat(count).isEqualTo(1);
 
-        NotesResponseDTO data = notesResponseDTOToClientResponse.getData();
+        BoardResponse data = notesResponseDTOToClientResponse.getData();
         String removedTitle = data.getTitle();
         String removedContent = data.getContent();
         Assertions.assertThat(removedTitle).isEqualTo("Title #1");
         Assertions.assertThat(removedContent).isEqualTo("Content #1");
 
-        List<Notes> allNotes = notesRepository.findAll();
+        List<Board> allNotes = boardRepository.findAll();
         Assertions.assertThat(allNotes).hasSize(0);
     }
 
+    private Student createStudent(String studentId) {
+        return Student.of(studentId, "kms", "password", "test@sju.com", true);
+    }
 }
