@@ -1,22 +1,22 @@
 import React, { Component } from "react";
 import { Table, Button } from "react-bootstrap";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
+import queryStirng from 'query-string'
 import axios from "axios";
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
-
 class BoardDetail extends Component {
+
   state = {
     board: []
   };
 
   componentDidMount() {
-    console.log(this.props);
-    if (this.props !== undefined) {
+    console.log(queryStirng.parse(window.location.search).id);
+    if (queryStirng.parse(window.location.search).id != undefined) {
       this.getDetail();
     } else {
-      window.location.href = "/";
-      //console.log(this.props);
+      //window.location.href = "/";
     }
   }
 
@@ -44,7 +44,7 @@ class BoardDetail extends Component {
   getDetail = () => {
     const send_param = {
       headers,
-      _id: this.props._id
+      _id: queryStirng.parse(window.location.search).id
     };
     const marginBottom = {
       marginBottom: 5
@@ -75,25 +75,19 @@ class BoardDetail extends Component {
               <div>
                 <NavLink
                   to={{
-                    pathname: "/boardWrite",
+                    pathname: "../boardWrite",
                     query: {
                       title: returnData.data.board[0].title,
                       content: returnData.data.board[0].content,
-                      _id: this.props._id
+                      _id: queryStirng.parse(window.location.search).id
                     }
                   }}
                 >
-                  <Button block style={marginBottom}>
-                    글 수정
-                  </Button>
+                <Button block style={marginBottom}>
+                  글 수정
+                </Button>
                 </NavLink>
-                <Button
-                  block
-                  onClick={this.deleteBoard.bind(
-                    null,
-                    this.props._id
-                  )}
-                >
+                <Button block onClick={this.deleteBoard.bind(null, queryStirng.parse(window.location.search).id)}>
                   글 삭제
                 </Button>
               </div>

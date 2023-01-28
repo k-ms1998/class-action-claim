@@ -26,6 +26,7 @@ class Body extends Component {
         <Routes>
           <Route path="/mypage" element={<MypageForm/>}/>
           <Route path="/BoardWriteForm" element={<BoardWriteForm/>}/>
+          <Route exact path="/BoardDetail" element={<BoardDetail/>}/>
           {resultForm}
         </Routes>
     );

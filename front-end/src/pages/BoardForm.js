@@ -43,18 +43,15 @@ class BoardResult extends Component{
           createdAt={item.createdAt}
           title={item.title}>
             <td>
-              <NavLink to= "/BoardHome/BoardDetail">
+              <NavLink to= {`/BoardHome/BoardDetail?id=${item._id}`}>
                 {item.createdAt.substring(0, 10)}
               </NavLink>
             </td>
             <td>
-              <NavLink to="/BoardHome/BoardDetail">
-                {item.title}
-              </NavLink>
+            <NavLink to= {`/BoardHome/BoardDetail?id=${item._id}`}>
+              {item.title}
+            </NavLink>
             </td>
-            <Routes>
-              <Route exact path="/BoardDetail" element={<BoardDetail _id={item._id}/>}/>
-            </Routes>
             </tr>
           ));
           this.setState({
