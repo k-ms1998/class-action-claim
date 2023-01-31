@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping(value = {"notes", "board"})
 @RequiredArgsConstructor
 public class BoardController {
 
@@ -23,9 +23,10 @@ public class BoardController {
     }
 
     @PostMapping("/write")
-    public BoardResponse writeBoard(@RequestBody BoardWriteRequest request) {
+    public ToClientResponse<BoardResponse> writeBoard(@RequestBody BoardWriteRequest request) {
+        BoardResponse boardResponse = boardService.writeBoard(request);
 
-        return boardService.writeBoard(request);
+        return new ToClientResponse<>("Success", 1, 200, boardResponse);
     }
 
     @PostMapping("/update")
