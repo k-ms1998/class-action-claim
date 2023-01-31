@@ -65,7 +65,7 @@ class BoardWriteForm extends Component {
       .post(url, send_param)
       //정상 수행
       .then(returnData => {
-        if (returnData.status == 200) {
+        if (returnData.data.status == 'OK') {
           alert(returnData.data.message);
           window.location.href = "/";
         } 

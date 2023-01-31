@@ -68,7 +68,7 @@ public class StudentService {
         }
         if(!byEmail.isAuthenticated()){
             log.info("[StudentService] Student Unverified.");
-            throw new ClassActionClaimException(ErrorCode.UNVERIFIED_USER, String.format("%s is already verified.", email));
+            throw new ClassActionClaimException(ErrorCode.UNVERIFIED_USER, String.format("%s is unverified.", email));
         }
         if (!password.equals(byEmail.getPassword())) {
             log.info("[StudentService] Incorrect Password.");
