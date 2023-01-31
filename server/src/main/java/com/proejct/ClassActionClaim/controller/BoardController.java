@@ -6,6 +6,7 @@ import com.proejct.ClassActionClaim.dto.ResponseBody.BoardResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
 import com.proejct.ClassActionClaim.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class BoardController {
     public ToClientResponse<BoardResponse> writeBoard(@RequestBody BoardWriteRequest request) {
         BoardResponse boardResponse = boardService.writeBoard(request);
 
-        return new ToClientResponse<>("Success", 1, 200, boardResponse);
+        return new ToClientResponse<>("Board Saved.", 1, HttpStatus.OK, boardResponse);
     }
 
     @PostMapping("/update")

@@ -13,6 +13,7 @@ import com.proejct.ClassActionClaim.repository.StudentRepository;
 import com.proejct.ClassActionClaim.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -92,7 +93,7 @@ public class EmailAuthService {
         } catch (Exception e) {
             log.info("!! Couldn't Retrieve Token !!");
             e.printStackTrace();
-            return new ToClientResponse("Unsuccessful", 0, 400, null);
+            return new ToClientResponse("Unsuccessful", 0, HttpStatus.BAD_REQUEST, null);
         }
 
         if (token != null) {
@@ -115,19 +116,19 @@ public class EmailAuthService {
                     String reqPassword = emailAuthData.getPassword();
                     StudentRequestDTO studentRequestDTO = new StudentRequestDTO(reqName, reqPassword, reqEmail);
 //                    studentService.addStudent(studentRequestDTO);
-                    return new ToClientResponse("Sign Up Successful", 0, 200, null);
+                    return new ToClientResponse("Sign Up Successful", 0, HttpStatus.OK, null);
                 } else {
                     log.info("Incorrect Code");
-                    return new ToClientResponse("Unsuccessful", 0, 400, null);
+                    return new ToClientResponse("Unsuccessful", 0, HttpStatus.BAD_REQUEST, null);
                 }
             }
         }
         else{
             log.info("!! Token is NULL !!");
-            return new ToClientResponse("Unsuccessful", 0, 400, null);
+            return new ToClientResponse("Unsuccessful", 0, HttpStatus.BAD_REQUEST, null);
         }
 
-        return new ToClientResponse("Unsuccessful", 0, 400, null);
+        return new ToClientResponse("Unsuccessful", 0, HttpStatus.BAD_REQUEST, null);
     }
 
     /**

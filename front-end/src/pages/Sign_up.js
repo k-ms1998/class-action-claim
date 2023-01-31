@@ -59,7 +59,7 @@ class Sign_up extends Component {
       .post("http://localhost:8080/member/join", send_param)
       //정상 수행
       .then(returnData => {
-        if (returnData.data.message) {
+        if (returnData.status == 200) {
           alert(returnData.data.message);
           //이메일 중복 체크
           if (returnData.data.dupYn === "1") {

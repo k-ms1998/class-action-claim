@@ -5,6 +5,8 @@ import com.proejct.ClassActionClaim.dto.RequestBody.StudentLoginRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.StudentLoginResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.UserResponse;
 import com.proejct.ClassActionClaim.dto.StudentRequestDTO;
+import com.proejct.ClassActionClaim.exception.ClassActionClaimException;
+import com.proejct.ClassActionClaim.exception.ErrorCode;
 import com.proejct.ClassActionClaim.repository.StudentRepository;
 import com.proejct.ClassActionClaim.service.server.EmailAuthService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,9 @@ public class StudentService {
             uuid = UUID.randomUUID().toString();
             studentRepository.save(Student.of(uuid, name, password, email, authenticated));
         }else{
+            if(byEmail.isAuthenticated()){
+                throw new ClassActionClaimException(ErrorCode.DUPLICATE_USER, "");
+            }
             uuid = byEmail.getUuid();
         }
         /**
@@ -59,15 +64,15 @@ public class StudentService {
         Student byEmail = studentRepository.findByEmail(email);
         if (byEmail == null) {
             log.info("[StudentService] Student Doesn't Exist.");
-            return StudentLoginResponse.of(null, null, "Login Failed. Email Doesn't Exist.");
+            throw new ClassActionClaimException(ErrorCode.INVALID_USER, String.format("%s doesn't exist.", email));
         }
         if(!byEmail.isAuthenticated()){
             log.info("[StudentService] Student Unverified.");
-            return StudentLoginResponse.of(byEmail.getUuid(), byEmail.getEmail(), "Login Failed. Student Unverified.");
+            throw new ClassActionClaimException(ErrorCode.UNVERIFIED_USER, String.format("%s is already verified.", email));
         }
         if (!password.equals(byEmail.getPassword())) {
             log.info("[StudentService] Incorrect Password.");
-            return StudentLoginResponse.of(byEmail.getUuid(), byEmail.getEmail(), "Login Failed. Incorrect Password.");
+            throw new ClassActionClaimException(ErrorCode.INCORRECT_PASSWORD, "");
         }
 
         log.info("[StudentService] Student Login Success.");

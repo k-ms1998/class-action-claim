@@ -7,6 +7,8 @@ import com.proejct.ClassActionClaim.dto.RequestBody.Board.BoardWriteRequest;
 import com.proejct.ClassActionClaim.dto.RequestBody.BoardRequest;
 import com.proejct.ClassActionClaim.dto.ResponseBody.BoardResponse;
 import com.proejct.ClassActionClaim.dto.ResponseBody.ToClientResponse;
+import com.proejct.ClassActionClaim.exception.ClassActionClaimException;
+import com.proejct.ClassActionClaim.exception.ErrorCode;
 import com.proejct.ClassActionClaim.repository.LectureRepository;
 import com.proejct.ClassActionClaim.repository.BoardRepository;
 import com.proejct.ClassActionClaim.repository.StudentRepository;
@@ -52,10 +54,10 @@ public class BoardService {
 
         Student student = studentRepository.findByUuid(studentId);
         if (student == null) {
-            throw new RuntimeException();
+            throw new ClassActionClaimException(ErrorCode.INVALID_USER, "");
         }
         if(isStudentNotAuthenticated(student)){
-            throw new RuntimeException();
+            throw new ClassActionClaimException(ErrorCode.UNVERIFIED_USER, "");
         }
 
         Board board = BoardWriteRequest.toEntity(request, student);
