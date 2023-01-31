@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 @Slf4j
 public class StudentController {
@@ -23,7 +23,7 @@ public class StudentController {
         return "signUpPage";
     }
 
-    @PostMapping(value = "/signup")
+    @PostMapping("/join")
     public UserResponse studentSignUp(@RequestBody StudentRequestDTO studentRequestDTO) {
         log.info("[POST] /student/signup : " + studentRequestDTO);
 
